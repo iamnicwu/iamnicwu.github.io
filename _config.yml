@@ -3,16 +3,18 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Nick's Blog
-subtitle: haha
+title: nForce
+subtitle: Blog of sharing stuff
 description:
 author: Nick Wu
-language: EN
+author_title: 'Software Developer'
+language: en
 timezone:
+follow: https://twitter.com/iamnicwu
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: iamnicwu.github.io
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
