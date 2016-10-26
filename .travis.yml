@@ -6,8 +6,8 @@ install:
   - npm install  #安装hexo及插件
 
 script:
-  - hexo cl  #清除
-  - hexo g  #生成
+  - hexo clean  #清除
+  - hexo generate  #生成
 
 after_script:
   - cd ./public
