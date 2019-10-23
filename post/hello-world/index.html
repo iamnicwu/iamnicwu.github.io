@@ -9,15 +9,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://iamnicwu.github.io/favicon.ico?v=1571814362924">
+<link rel="shortcut icon" href="https://iamnicwu.github.io/favicon.ico?v=1571814910396">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://iamnicwu.github.io/styles/main.css">
 
 
   
-
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
   
-    <link rel="stylesheet" href="https://unpkg.com/disqusjs@1.1/dist/disqusjs.css" />
+
   
 
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://iamnicwu.github.io">
-        <img src="https://iamnicwu.github.io/images/avatar.png?v=1571814362924" class="site-logo">
+        <img src="https://iamnicwu.github.io/images/avatar.png?v=1571814910396" class="site-logo">
         <h1 class="site-title">Nick&#39;s blog</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -123,9 +123,9 @@
 
             
               
-
+                <div id="gitalk-container" data-aos="fade-in"></div>
               
-                <div id="disqus_thread" data-aos="fade-in"></div>
+
               
             
 
@@ -155,21 +155,24 @@ var app = new Vue({
 
 
   
-
-  
-    <script src="https://unpkg.com/disqusjs@1.1/dist/disqus.js"></script>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
     <script>
 
-    var options = {
-      shortname: 'nickwu',
-      apikey: 'CkDhN4HReNNKBq28iu49gsORL8ARNEgZTkekYcKEJYZ75npBpMbUDVbu1yPOOAtC',
-    }
-    if ('') {
-      options.api = ''
-    }
-    var dsqjs = new DisqusJS(options)
+      var gitalk = new Gitalk({
+        clientID: '1caf159172acb5c8c519',
+        clientSecret: 'b2bca45d66b851be0fc52f7ec546b35b8c348943',
+        repo: 'iamnicwu.github.io',
+        owner: 'nickwu',
+        admin: ['nickwu'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
 
     </script>
+  
+
   
 
 
