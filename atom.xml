@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://github.com/iamnicwu/</id>
+    <id>https://github.com/iamnicwu</id>
     <title>Nick&apos;s blog</title>
-    <updated>2019-10-23T06:46:19.006Z</updated>
+    <updated>2019-10-23T06:47:27.423Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://github.com/iamnicwu/"/>
-    <link rel="self" href="https://github.com/iamnicwu//atom.xml"/>
+    <link rel="alternate" href="https://github.com/iamnicwu"/>
+    <link rel="self" href="https://github.com/iamnicwu/atom.xml"/>
     <subtitle>閒看兒童捉柳花</subtitle>
-    <logo>https://github.com/iamnicwu//images/avatar.png</logo>
-    <icon>https://github.com/iamnicwu//favicon.ico</icon>
+    <logo>https://github.com/iamnicwu/images/avatar.png</logo>
+    <icon>https://github.com/iamnicwu/favicon.ico</icon>
     <rights>All rights reserved 2019, Nick&apos;s blog</rights>
     <entry>
         <title type="html"><![CDATA[Hello World]]></title>
-        <id>https://github.com/iamnicwu//post/hello-world</id>
-        <link href="https://github.com/iamnicwu//post/hello-world">
+        <id>https://github.com/iamnicwu/post/hello-world</id>
+        <link href="https://github.com/iamnicwu/post/hello-world">
         </link>
         <updated>2019-10-23T06:37:21.000Z</updated>
         <content type="html"><![CDATA[<p>fdsa</p>
@@ -21,8 +21,8 @@
     </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
-        <id>https://github.com/iamnicwu//post/hello-gridea</id>
-        <link href="https://github.com/iamnicwu//post/hello-gridea">
+        <id>https://github.com/iamnicwu/post/hello-gridea</id>
+        <link href="https://github.com/iamnicwu/post/hello-gridea">
         </link>
         <updated>2018-12-11T16:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
