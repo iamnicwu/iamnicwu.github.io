@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://iamnicwu.github.io/sitemap.xml
