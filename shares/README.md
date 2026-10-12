@@ -2,7 +2,7 @@
 
 导出脚本：`node scripts/export-shares.mjs`（每次改完文章重跑一遍，覆盖这里所有文件）
 
-改动只发生在三处：front matter 被去掉、站内图片路径 `/post-images/…` 被替换成 `https://nickwu.fun/post-images/…`、
+改动只发生在三处：front matter 被去掉、站内图片路径 `/post-images/…` 被替换成 `https://blog.nickwu.fun/post-images/…`、
 正文里的 `<figure>` 降级成「Markdown 图 + 斜体图注」。
 文字一个字都没动 —— 所以这里的版本和博客上的是同一份内容。**改文章请改 `content/posts/*.md`，别改这里。**
 
@@ -19,7 +19,7 @@
 
 ## 发布前检查
 
-1. **站点已部署**。外部平台读的是 `https://nickwu.fun/post-images/…`，图片没推上去就是 404。先确认博客首页能打开、文章页图片正常。
+1. **站点已部署**。外部平台读的是 `https://blog.nickwu.fun/post-images/…`，图片没推上去就是 404。先确认博客首页能打开、文章页图片正常。
 2. **摘要**。所有平台都要单独填摘要，用 front matter 里的 `summary`，各平台保持一致。
 3. **封面**。掘金和公众号要单独上传封面图，用 front matter 里 `cover.image` 指的那张。
 4. **首发链接**。文章末尾已经带了原文链接，别删 —— 外部平台的流量能回到自己站点，靠的就是这一行。

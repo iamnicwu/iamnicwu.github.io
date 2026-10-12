@@ -6,7 +6,7 @@
 
 nForce Tools 就是冲这件事做的：一个 Chrome 扩展，把那些"顺手要查一下"的操作收到浏览器侧边栏里。数据从浏览器直接打到 Salesforce，中间不经过任何服务器。
 
-![nForce Tools 的功能中心](https://nickwu.fun/post-images/nforce-tools/01-home.png "首页是一个图标化的功能中心，按「连接与环境 / LTS / 数据分析 / OTT / PCD / CVP7 / 工具」分组。最近用得多功能会自动排到「常用功能」那一栏里去")
+![nForce Tools 的功能中心](https://blog.nickwu.fun/post-images/nforce-tools/01-home.png "首页是一个图标化的功能中心，按「连接与环境 / LTS / 数据分析 / OTT / PCD / CVP7 / 工具」分组。最近用得多功能会自动排到「常用功能」那一栏里去")
 
 ## 连接：两种方式，都不需要配 Connected App
 
@@ -17,7 +17,7 @@ nForce Tools 就是冲这件事做的：一个 Chrome 扩展，把那些"顺手�
 
 顶部一直挂着两枚状态：连上没连上、连的是 Production 还是 Sandbox。这两个是分开的，看错环境发错请求的代价比多数人想的高。
 
-![插件偏好面板](https://nickwu.fun/post-images/nforce-tools/05-prefs.png)
+![插件偏好面板](https://blog.nickwu.fun/post-images/nforce-tools/05-prefs.png)
 
 *插件偏好里可以锁定 Salesforce API 版本（默认 64.0，可自定义），以及确认侧边栏当前在左边还是右边*
 
@@ -32,7 +32,7 @@ Session ID 是短命的。隔一段时间不用，或者 Salesforce 那边主动
 1. **先自己救**。检测到失效时，扩展会尝试从浏览器 Cookie 里重新换一个会话（`cookies` 权限）。换到了就静默继续，你甚至感觉不到。
 2. **救不了才叫人**。Cookie 那条路走不通（比如浏览器里压根没登录态，或者组织禁了 Cookie 取 token），就明确告诉你缺的是什么，并给一个「打开登录页」的按钮 —— 登录完回来点一下「自动获取 Session 并重新连接」就行。
 
-![会话重新连接面板](https://nickwu.fun/post-images/nforce-tools/07-session-reconnect.png)
+![会话重新连接面板](https://blog.nickwu.fun/post-images/nforce-tools/07-session-reconnect.png)
 
 *自动修复失败时给的是具体原因和一条可走的路，而不是一句「连接失败」*
 
@@ -95,11 +95,11 @@ LTS（Long Term Sales）相关的订单查询是这个扩展最早做的一块�
 - 「常用功能」另外会按你的**实际使用频率自动排序**，手动固定的排在自动排序前面。
 - 布局配置页里能整组拖动、改名、调顺序。
 
-![布局配置页](https://nickwu.fun/post-images/nforce-tools/02-layout.png "分组顺序、组内图标、常用区都能改。改完直接反映到首页")
+![布局配置页](https://blog.nickwu.fun/post-images/nforce-tools/02-layout.png "分组顺序、组内图标、常用区都能改。改完直接反映到首页")
 
 设置页则只管三件事：连接、布局、项目说明。刻意的 —— 设置页一旦什么都往里塞，就变成了第二个首页。
 
-![设置页](https://nickwu.fun/post-images/nforce-tools/03-settings.png)
+![设置页](https://blog.nickwu.fun/post-images/nforce-tools/03-settings.png)
 
 ## 顺带做了个 Org Limits 看板
 
@@ -107,7 +107,7 @@ LTS（Long Term Sales）相关的订单查询是这个扩展最早做的一块�
 
 侧边栏顶部直接放了一个仪表盘，用 ECharts 的 gauge 画的：
 
-![Org Limits 仪表盘](https://nickwu.fun/post-images/nforce-tools/06-org-limits.png)
+![Org Limits 仪表盘](https://blog.nickwu.fun/post-images/nforce-tools/06-org-limits.png)
 
 *Daily API Requests、Daily Async Apex Executions、Daily Bulk API Requests、Data Storage 四项，超阈值会变红并汇总成顶部一条告警*
 
@@ -164,8 +164,8 @@ https://*.cloudforce.com/*   ...（含 .cn / .mil / .mcas.ms 等变体）
 
 ---
 
-原文：[nForce Tools：把 Salesforce 的日常操作收进一个侧边栏](https://nickwu.fun/post/nforce-tools/) · v4.4.0
+原文：[nForce Tools：把 Salesforce 的日常操作收进一个侧边栏](https://blog.nickwu.fun/post/nforce-tools/) · v4.4.0
 标签：Salesforce · Chrome 扩展 · 效率工具
 站内还写过几款同系列扩展，感兴趣可以顺着标签翻一翻。
 
-<!-- 发布提示：图片已换成绝对地址 https://nickwu.fun/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->
+<!-- 发布提示：图片已换成绝对地址 https://blog.nickwu.fun/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->
