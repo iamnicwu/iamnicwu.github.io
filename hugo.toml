@@ -1,4 +1,6 @@
-baseURL = "https://iamnicwu.github.io/"
+# 自定义域是 nickwu.fun。GitHub Pages 会把 iamnicwu.github.io 301 到这里，
+# 所以 canonical / sitemap / RSS 里的绝对地址都该用最终域名。
+baseURL = "https://nickwu.fun/"
 defaultContentLanguage = "zh"
 
 title = "Nick's blog"

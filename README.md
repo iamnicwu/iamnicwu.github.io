@@ -1,6 +1,15 @@
 # Nick's blog
 
-Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 GitHub Pages（https://iamnicwu.github.io/）。
+Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 GitHub Pages，自定义域 **https://nickwu.fun/**。
+
+## 自定义域（nickwu.fun）—— 改这里之前先读
+
+- `static/CNAME` 里写着 `nickwu.fun`。**这个文件必须留在 `static/` 下**：
+  Pages 的构建类型是 `legacy`（从 `master` 分支根目录发布），删掉 CNAME 文件等于取消自定义域。
+  而 `scripts/deploy-via-api.mjs` 是「整棵新树覆盖 master」，所以 CNAME 只能由 Hugo 从 `static/` 带出来。
+- `hugo.toml` 的 `baseURL` 必须与之一致，否则 canonical / sitemap / RSS / 列表封面图都会指回 `iamnicwu.github.io`。
+- DNS 在阿里云（万网），apex 用 A 记录指向 GitHub Pages 的那四个 IP，`www` 用 CNAME 指向 `iamnicwu.github.io`。
+- 更换或删除域名后，**当天就把 DNS 记录清掉**，避免域被他人接管（GitHub Pages 的 domain takeover 风险）。
 
 ## 写新文章
 
