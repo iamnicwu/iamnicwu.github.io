@@ -1,21 +1,27 @@
 # 域名与 DNS 说明
 
-## 最终方案：博客在 `blog.nickwu.fun`
+## 最终方案
 
-2026-10-12 最终定下的形态。**用子域名而不是 apex 是刻意的，不是将就。**
+2026-10-12 定下的形态。**用子域名而不是 apex 是刻意的，不是将就。**
 
 | | |
 | --- | --- |
 | 博客地址 | `https://blog.nickwu.fun/` |
-| 记录 | `blog` CNAME → `iamnicwu.github.io`（**不带仓库名**） |
-| apex `nickwu.fun` | 不再承载博客，空出来给别的服务（比如把 LobeChat 放回去） |
+| 承载记录 | `blog` CNAME → `iamnicwu.github.io`（**不带仓库名**） |
+| apex `nickwu.fun` | **刻意不解析**，整个腾出来备用 |
+| `www.nickwu.fun` | 同样不解析 |
+| CAA | 无（刻意不加，见下） |
+| DNS 托管 | 阿里云云解析（`dns25/dns26.hichina.com`） |
+
+只有一条记录在干活。apex 和 www 都留空 —— 访客打主域会看到浏览器的 DNS 错误页，
+而不是 GitHub 那个半死不活的 404。将来给 LobeChat、别的项目、或 apex 邮箱用都不受影响。
 
 ### 为什么必须是子域名
 
 子域名走 **CNAME**，而按 RFC 8659，**CAA 查询遇到 CNAME 要跟着走到目标域** ——
 于是校验落在 `iamnicwu.github.io` → `github.io`（GitHub 自家 DNS）上，**永远不会超时**。
 
-apex 只能走 A 记录，CAA 必须直查 `nickwu.fun` 的权威 NS（当时是阿里云 `dns25/dns26.hichina.com`），
+apex 只能走 A 记录，CAA 必须直查 `nickwu.fun` 的权威 NS（阿里云 `dns25/dns26.hichina.com`），
 **无记录时还要向上递归到 `.fun` 顶级域并做 DNSSEC「无 DS」证明**。这条路在 GitHub 的解析器
 （Ruby 的 Dnsruby）上会**间歇性超时**：
 
@@ -26,14 +32,74 @@ apex nickwu.fun:  caa_error = "Dnsruby::ResolvTimeout"   is_https_eligible 在 t
 `is_https_eligible` 就是证书签发的闸门 —— 它抖，证书就**永远签不出来**。
 实测 `www` 的闸门**一次都没关过**，apex 则几分钟一跳。这就是换子域名的全部理由。
 
+### 为什么把 CAA 拿掉
+
+那条 `CAA @ 0 issue "letsencrypt.org"` 是排查期间加的，**它没解决问题** ——
+病根是 GitHub 解析器查 apex 的 CAA 时超时，加了记录照样超时。
+
+现在也不该留，因为 **CAA 会按域树向上继承**：将来 `nickwu.fun` 底下任何新子域名
+（比如做 A 记录的 `lobe.nickwu.fun`）签证书时，都会被这条限制成「只准 Let's Encrypt 签」。
+Vercel、Cloudflare 之类可能用别的 CA（Google Trust Services、ZeroSSL…），届时会出现
+**「证书签不出来但翻遍日志找不到原因」** —— 最难查的一类故障。
+真要加，先查清目标服务用哪家 CA，再写对应的 issue 值。
+
+> 顺带说明：`blog.nickwu.fun` 的证书签发**不受这里影响**。它的 CAA 校验会跟着
+> CNAME 走到 `github.io`，`nickwu.fun` 上的 CAA 有没有、写了什么，都问不到它头上。
+
 ## 记录清单
 
-见同目录的 [`nickwu.fun.zone`](./nickwu.fun.zone)，可直接导入 Cloudflare。
+见同目录的 [`nickwu.fun.zone`](./nickwu.fun.zone)（BIND 格式，含每条记录的来龙去脉）。
 
-| 类型 | 主机记录 | 值 | Proxy |
+在阿里云云解析控制台里，最终应该只有这一条：
+
+| 类型 | 主机记录 | 值 | TTL |
 | --- | --- | --- | --- |
-| CNAME | `blog` | `iamnicwu.github.io` | DNS only |
-| CAA | `@` | `0 issue "letsencrypt.org"` | — |
+| CNAME | `blog` | `iamnicwu.github.io` | 600 |
+
+**需要删掉的**（历史遗留，2026-10-12 前存在）：
+
+| 类型 | 主机记录 | 值 |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` / `.109.153` / `.110.153` / `.111.153` |
+| AAAA | `@` | `2606:50c0:8000::153` / `:8001::` / `:8002::` / `:8003::` |
+| CNAME | `www` | `iamnicwu.github.io` |
+| CAA | `@` | `0 issue "letsencrypt.org"`（如果当初真的存进去了） |
+
+> 控制台路径：**云解析 DNS → 公网权威解析 → `nickwu.fun` → 解析设置**，
+> 逐条点右侧「删除」。删除后 `dig +short A nickwu.fun @223.5.5.5` 应该返回空。
+
+## 让 apex 跳转到博客（如果将来想做）
+
+想让 `nickwu.fun` 也能打开博客，**只有 Cloudflare 这一条免费路**。
+
+### 为什么不用阿里云的 URL 转发
+
+看着最省事，实际走不通。阿里云官方 FAQ 原文：
+
+> **Q: URL 转发是否需要 ICP 备案?**
+> **答: 需要。**使用 URL 转发功能时,转发的域名必须已在中国内地完成 ICP 备案。
+> 如果域名未完成备案,URL 转发将无法生效,导致访问失败。
+
+原理是转发服务器部署在中国内地，访问者实际是去打那台服务器。个人博客域名走 ICP 备案
+不现实。另外它还有三个硬伤：只给 **302**（不是 301）；**不支持带路径参数**
+（`nickwu.fun/a/b` 跳过去会丢掉 `/a/b`）；免费版只有 **2 条**。
+
+### Cloudflare Single Redirect 配方
+
+**免费版就有 10 条规则**，支持 wildcard，官方文档里「Redirect apex domain to a subdomain」
+就是这个场景。要点：
+
+1. DNS 托管搬到 Cloudflare（步骤见下一节），`nickwu.fun` 加进 Cloudflare。
+2. `blog` 那条 CNAME 保持 **DNS only（灰云）** —— 还在给 GitHub 用，铁律不能破。
+3. apex 加一条 A 记录，IP 随便填（例如 `192.0.2.1`），Proxy status 选 **Proxied（橙云）**。
+   > 这条之所以能开橙云，是因为它**不指向 GitHub**。灰云铁律约束的是指向 GitHub 的记录；
+   > 这条记录只会被 Redirect 规则吃掉，请求根本到不了 GitHub，所以不冲突。
+4. 加一条 **Single Redirect**：
+   - When incoming requests match：`lower(http.host) eq "nickwu.fun" or lower(http.host) eq "www.nickwu.fun"`
+   - Then：Dynamic Expression `concat("https://blog.nickwu.fun", http.request.uri.path)`
+   - Status code：**301**
+
+完整配置示例见 Cloudflare 文档的 [Set up redirects · Free plan](https://developers.cloudflare.com/learning-paths/get-started-free/other-features/redirects/)。
 
 ## 给 GitHub Pages 用 Cloudflare 的铁律：灰云
 
@@ -47,7 +113,10 @@ GitHub Support 原话：
 开着橙云，Cloudflare 会用**自己的 anycast IP** 应答 DNS，GitHub 就看不到指向自己的记录 →
 域名校验失败、证书签不出来；即使签出来了，续期时同样过不了这一关。
 
-## 迁移到 Cloudflare 的步骤
+> 注意适用范围：这条只管**指向 GitHub 的记录**。指向别处的记录（比如上面给 Redirect
+> 用的 apex）开橙云没问题。
+
+## 迁移到 Cloudflare 的步骤（可选）
 
 ### 1. 添加站点
 
@@ -131,3 +200,7 @@ Cloudflare 的 DNSSEC 默认关闭，**保持关闭**。开了就得去注册商
    不要误读成 API 不支持。
 5. **「移除 + 重加」在 legacy 模式下用 API 清 `cname` 是有效的**，
    不需要去改 `master` 上的 CNAME 文件；清掉后等构建完成，自定义域会真的 404。
+6. **`dig +short CAA <子域名>` 返回的是 CNAME target**，不是错误。
+   dig 对没有 CAA 记录的子域名就是这么答的 —— 别把它当成"记录配错了"。
+7. **别用 `grep "a\|b"` 在 macOS 上做交替匹配**，BSD grep 不支持，会**静默零匹配**，
+   看起来像"没有残留"其实什么都没查。用 `grep -E` 或 ripgrep。

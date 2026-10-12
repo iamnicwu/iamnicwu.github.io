@@ -1,18 +1,18 @@
-; nickwu.fun —— 博客的 DNS 记录（BIND zone file）
+; nickwu.fun —— 这个 zone 应该长什么样（BIND zone file 格式）
 ;
-; 用途：直接导入 Cloudflare（DNS → Records → Import and Export → Import DNS records），
-;       避免手抄记录出错。
+; ⚠️ 这是一份**文档**，不是自动部署的东西。真正的记录在阿里云云解析控制台里
+;    （NS 是 dns25/dns26.hichina.com）。改完这里记得去控制台跟着改，
+;    两边别长期不一致 —— 文档和线上对不上，比没有文档更害人。
 ;
-; ⚠️ 导入后必须逐条确认 **Proxy status 全是 DNS only（灰色云）**。
-;    开着橙云会让 GitHub 看不到指向它的 DNS 记录，既阻碍证书签发、
-;    也会让已签发的证书无法自动续期（GitHub Support 的原话）。
+; 想看**线上此刻的真实状态**（而不是这份文档）：
+;     node scripts/check-domain.mjs
 ;
-; ⚠️ 导入前先检查 Cloudflare 自动扫描出来的记录里有没有
-;    `76.76.21.21` 或 `cname.vercel-dns.com` 之类的 Vercel 残留 —— 有就删掉。
-;
+; 格式是标准 BIND 语法，将来若真把 DNS 搬到 Cloudflare，
+; 可以直接 Import DNS records 导入，不用手抄。
+
 $TTL 600
 
-; ── 博客本体 ──────────────────────────────────────────────────────────
+; ── 唯一一条承载博客的记录 ────────────────────────────────────────────
 ; 2026-10-12 起博客在 blog.nickwu.fun。
 ; 用子域名而不是 apex 是**刻意的**：子域名走 CNAME，按 RFC 8659，
 ; CAA 查询遇到 CNAME 要跟着走到目标域，于是校验落在 github.io
@@ -22,21 +22,38 @@ $TTL 600
 ; 证书永远签不出来。
 blog.nickwu.fun.  IN  CNAME  iamnicwu.github.io.
 
-; ── 显式声明只允许 Let's Encrypt 签证书 ────────────────────────────────
-; 顺带也保护了后续可能挂在 nickwu.fun 下的其它服务。
-nickwu.fun.      IN  CAA    0 issue "letsencrypt.org"
-
-; ── apex（已不再承载博客）──────────────────────────────────────────────
-; 下面这四条 A + 四条 AAAA 是 apex 指向 GitHub Pages 的写法。博客搬到
-; blog.nickwu.fun 之后它们不再需要 —— 保留着只会让 nickwu.fun 指向一个
-; 不认识的 Host，返回 GitHub 的 404 页。想给 apex 派别的用场（比如把
-; LobeChat 放回来）就换成对应的记录；不用就整段删掉，让 nickwu.fun 不解析。
+; ── apex 与 www：刻意留空 ─────────────────────────────────────────────
+; 2026-10-12 决定：apex 不再解析，把 nickwu.fun 整个腾出来。
 ;
-; nickwu.fun.      IN  A      185.199.108.153
-; nickwu.fun.      IN  A      185.199.109.153
-; nickwu.fun.      IN  A      185.199.110.153
-; nickwu.fun.      IN  A      185.199.111.153
-; nickwu.fun.      IN  AAAA   2606:50c0:8000::153
-; nickwu.fun.      IN  AAAA   2606:50c0:8001::153
-; nickwu.fun.      IN  AAAA   2606:50c0:8002::153
-; nickwu.fun.      IN  AAAA   2606:50c0:8003::153
+; 之前这里挂过 4×A + 4×AAAA（GitHub Pages 的 IP：185.199.108-111.153 /
+; 2606:50c0:8000-8003::153）。博客搬到 blog.nickwu.fun 之后，apex 不再是
+; GitHub Pages 配置的自定义域，那些记录只会让 nickwu.fun 收到一个
+; GitHub 不认识的 Host，返回它的 404 页 —— 半死不活，最难看的一种状态。
+;
+; www.nickwu.fun 当时是 CNAME → iamnicwu.github.io，会被 GitHub 301 到
+; nickwu.fun，而 apex 又 404，等于绕一圈进死胡同 —— 一并删掉。
+;
+; 结果：**nickwu.fun 和 www.nickwu.fun 都不解析**。访客打主域看到的是
+; 浏览器的 DNS 错误页（干净、明确），而不是一个 404。主域从此空着，
+; 将来给 LobeChat、别的项目、或 apex 邮箱用都不受影响。
+;
+; 【哪天要给 apex 派用场】按目标服务给的记录填。常见三个去向：
+;   · 放回 Vercel（LobeChat）：
+;         nickwu.fun.  IN  A  76.76.21.21
+;   · 继续指 GitHub Pages（注意：apex 签不出证书的老问题会回来）：
+;         nickwu.fun.  IN  A  185.199.108.153    （共 4 条 A + 4 条 AAAA）
+;   · 想让 apex 301 跳到博客：DNS 托管得搬到 Cloudflare，
+;     用 Single Redirect 规则（免费版 10 条）。配方见本目录 README。
+
+; ── CAA：已移除 ───────────────────────────────────────────────────────
+; 当时为了让 apex 能签出证书加过这条：
+;     nickwu.fun.  IN  CAA  0 issue "letsencrypt.org"
+; 它并没有解决问题 —— 病根是 GitHub 的解析器查 apex 的 CAA 时超时，
+; 加了记录照样超时。而现在 apex 什么都不承载，这条更是彻底失效：
+; blog 是 CNAME，CAA 校验会一路跟到 github.io，永远不会问到 nickwu.fun。
+;
+; 刻意**不留**这条记录，是因为 CAA 会按域树向上继承：将来 nickwu.fun 底下
+; 任何新子域名（比如做 A 记录的 lobe.nickwu.fun）签证书时都会被它限制成
+; 「只准 Let's Encrypt 签」。Vercel、Cloudflare 之类可能用别的 CA，届时会
+; 出现「证书签不出来但翻遍日志找不到原因」这种最费时间的故障。
+; 真要加，先查清目标服务用哪家 CA，再写对应的 issue 值。
