@@ -6,7 +6,7 @@
 
 nForce Todo 是照着这两个坑做的。
 
-![nForce Todo 弹窗](https://iamnicwu.github.io/post-images/nforce-todo/01-popup.png "点工具栏图标就是弹窗：上面是输入框和今天清单，右上角可以切侧边栏和设置")
+![nForce Todo 弹窗](https://nickwu.fun/post-images/nforce-todo/01-popup.png "点工具栏图标就是弹窗：上面是输入框和今天清单，右上角可以切侧边栏和设置")
 
 *弹窗是最高频的入口。记完立刻看到今天还剩几件。*
 
@@ -50,7 +50,7 @@ nForce Todo 是照着这两个坑做的。
 
 输入框下方实时把解析出来的部分显示成胶囊，所以上面那几条规则不用背 —— 打一遍就懂。
 
-![一行语法与实时预览](https://iamnicwu.github.io/post-images/nforce-todo/02-quick-add.png "「回复客户邮件 明天 !1 #立即做」被拆成了 明天 / P1 / 立即做 三个胶囊，同时 P1 按钮自动点亮")
+![一行语法与实时预览](https://nickwu.fun/post-images/nforce-todo/02-quick-add.png "「回复客户邮件 明天 !1 #立即做」被拆成了 明天 / P1 / 立即做 三个胶囊，同时 P1 按钮自动点亮")
 
 三条边界处理得比较克制：
 
@@ -66,11 +66,11 @@ nForce Todo 是照着这两个坑做的。
 
 **今天** —— 按日期收拢的清单。今天的在上，更早没完成的分组在下面，勾选、双击改标题、拖动改象限都在这里。
 
-![今天视图](https://iamnicwu.github.io/post-images/nforce-todo/03-today.png)
+![今天视图](https://nickwu.fun/post-images/nforce-todo/03-today.png)
 
 **四象限** —— 重要紧急那套。按 `#立即做` `#计划做` `#委托做` `#有空做` 分四格，剩下的进「收集箱」。
 
-![四象限](https://iamnicwu.github.io/post-images/nforce-todo/04-matrix.png)
+![四象限](https://nickwu.fun/post-images/nforce-todo/04-matrix.png)
 
 **看板** —— 三列对应任务的生命周期：
 
@@ -84,7 +84,7 @@ nForce Todo 是照着这两个坑做的。
 
 卡片可以拖拽跨列，也可以用卡片上的下拉框移动 —— 拖拽只对有鼠标的人友好，下拉框对键盘和触屏同样可用。
 
-![看板](https://iamnicwu.github.io/post-images/nforce-todo/05-kanban.png)
+![看板](https://nickwu.fun/post-images/nforce-todo/05-kanban.png)
 
 ## 循环任务与到点提醒
 
@@ -92,7 +92,7 @@ nForce Todo 是照着这两个坑做的。
 
 设重复有两条路，但是同一条路 —— 在输入框里直接写 token，或者点下方「重复」面板点选。面板上每一次点击都会改写输入框里的 token，预览随之重新解析。所以面板显示的东西和最终建出来的任务不可能对不上。
 
-![重复面板](https://iamnicwu.github.io/post-images/nforce-todo/07-repeat.png)
+![重复面板](https://nickwu.fun/post-images/nforce-todo/07-repeat.png)
 
 **到点之后提醒分三层，都不打断你：**
 
@@ -102,7 +102,7 @@ nForce Todo 是照着这两个坑做的。
 | 插件内提醒条 | 弹窗和侧边栏顶部出现一条，最多列两条，更多的折成「还有 N 项在下面」 | 开 |
 | 系统通知 | 一条原生通知，点开看到是哪件事 | **关**，在设置页里拨开 |
 
-![到点提醒条](https://iamnicwu.github.io/post-images/nforce-todo/06-due.png)
+![到点提醒条](https://nickwu.fun/post-images/nforce-todo/06-due.png)
 
 提醒条**故意没有「忽略」按钮**：一条还成立的提醒被静音，正是徽章和提醒条开始互相矛盾的方式 —— 前者说 2 件到点，后者被你关掉了。让它消失的办法是完成它。
 
@@ -155,11 +155,11 @@ ima 的开放接口只能新建笔记和追加内容，不能修改也不能删�
 
 扩展默认不申请任何网站权限，只有在你点连接的时候才按需申请这一个域名 —— 所以安装时不会出现「读取你在所有网站上的数据」这种吓人的提示。
 
-![设置页](https://iamnicwu.github.io/post-images/nforce-todo/08-options.png)
+![设置页](https://nickwu.fun/post-images/nforce-todo/08-options.png)
 
 深色模式是跟着系统的，也能在标题栏手动切。
 
-![深色模式](https://iamnicwu.github.io/post-images/nforce-todo/09-dark.png)
+![深色模式](https://nickwu.fun/post-images/nforce-todo/09-dark.png)
 
 ## 安装
 
@@ -202,8 +202,8 @@ git clone https://github.com/iamnicwu/nForce-Todo.git
 
 ---
 
-原文：[nForce Todo：一行语法记下待办，然后自动备份到 ima](https://iamnicwu.github.io/post/nforce-todo/) · v1.1.0
+原文：[nForce Todo：一行语法记下待办，然后自动备份到 ima](https://nickwu.fun/post/nforce-todo/) · v1.1.0
 标签：Chrome 扩展 · 待办管理 · 效率工具
 站内还写过几款同系列扩展，感兴趣可以顺着标签翻一翻。
 
-<!-- 发布提示：图片已换成绝对地址 https://iamnicwu.github.io/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->
+<!-- 发布提示：图片已换成绝对地址 https://nickwu.fun/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->

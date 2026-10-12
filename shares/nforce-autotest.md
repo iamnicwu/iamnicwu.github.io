@@ -6,7 +6,7 @@
 
 nForce AutoTest 是想走另一条路：**用浏览器扩展做测试工具**。装了就能用，不用 npm install，不用 driver 版本管理，而且天然跑在你已经登录的浏览器里。
 
-![nForce AutoTest 图标](https://iamnicwu.github.io/post-images/nforce-autotest/00-icon.png)
+![nForce AutoTest 图标](https://nickwu.fun/post-images/nforce-autotest/00-icon.png)
 
 *图标是机器人头 —— nForce 系列里闪电已经被 Tools 占了，自动化就用了机器人*
 
@@ -195,8 +195,8 @@ rightClick: {
 
 ---
 
-原文：[nForce AutoTest：一个插件形态的 Web 自动化测试工具](https://iamnicwu.github.io/post/nforce-autotest/) · v1.0.0
+原文：[nForce AutoTest：一个插件形态的 Web 自动化测试工具](https://nickwu.fun/post/nforce-autotest/) · v1.0.0
 标签：Chrome 扩展 · 自动化测试 · 开发工具
 站内还写过几款同系列扩展，感兴趣可以顺着标签翻一翻。
 
-<!-- 发布提示：图片已换成绝对地址 https://iamnicwu.github.io/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->
+<!-- 发布提示：图片已换成绝对地址 https://nickwu.fun/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->

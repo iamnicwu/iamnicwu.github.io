@@ -6,7 +6,7 @@
 
 nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原生实现，没有构建步骤也没有第三方依赖 —— 克隆下来直接以「未打包扩展」加载就能用。
 
-![截图弹窗](https://iamnicwu.github.io/post-images/nforce-screencapture/01-popup.png "弹窗上半是四种截图模式入口，下半是输出格式、延时、是否打开编辑器这些高频开关，最下面挂着最近一次截图和「编辑 / 下载 / 复制」")
+![截图弹窗](https://nickwu.fun/post-images/nforce-screencapture/01-popup.png "弹窗上半是四种截图模式入口，下半是输出格式、延时、是否打开编辑器这些高频开关，最下面挂着最近一次截图和「编辑 / 下载 / 复制」")
 
 ## 五种截图模式
 
@@ -28,7 +28,7 @@ nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原�
 
 **滚动截屏**就是给这种情况准备的：页面上浮出一条工具条，**你自己滚**，滚到哪停一下它就截一帧。图片该加载的加载完了，你满意了再点「完成拼接」。无限滚动页面、瀑布流、动态加载的列表都靠这个。
 
-![长截图工具条](https://iamnicwu.github.io/post-images/nforce-screencapture/02-scroll.png)
+![长截图工具条](https://nickwu.fun/post-images/nforce-screencapture/02-scroll.png)
 
 ### 拼接做的事情
 
@@ -38,7 +38,7 @@ nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原�
 - **截图期间隐藏滚动条**，画面干净（可关掉）。
 - **进度气泡**：页面上实时显示 `正在截取整页 3/8`，随时可以取消。
 
-![标注编辑器](https://iamnicwu.github.io/post-images/nforce-screencapture/03-editor.png "编辑器的工具条：矩形 / 椭圆 / 箭头 / 画笔 / 马赛克 / 文字，8 色板 + 粗细调节，撤销重做，缩放，复制和下载")
+![标注编辑器](https://nickwu.fun/post-images/nforce-screencapture/03-editor.png "编辑器的工具条：矩形 / 椭圆 / 箭头 / 画笔 / 马赛克 / 文字，8 色板 + 粗细调节，撤销重做，缩放，复制和下载")
 
 ### 标注编辑器
 
@@ -57,7 +57,7 @@ nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原�
 3. 录完有多种停止方式：点系统弹出的「● 正在录制屏幕」通知、页面右键菜单（录制中会自动变成「停止录制屏幕」）、或者打开扩展面板点停止。
 4. 停止后自动打开预览页，可以在线播放、下载 MP4/WebM，或者一键「再录一段」。
 
-![录制中的面板](https://iamnicwu.github.io/post-images/nforce-screencapture/04-record-live.png "录制中面板有计时器、暂停和停止。暂停时计时器同步冻结")
+![录制中的面板](https://nickwu.fun/post-images/nforce-screencapture/04-record-live.png "录制中面板有计时器、暂停和停止。暂停时计时器同步冻结")
 
 ### 输出 MP4 而不是 WebM
 
@@ -70,7 +70,7 @@ nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原�
 
 浏览器不支持所选格式时会**自动回退**为另一种，不用手动干预。
 
-![录制完成预览页](https://iamnicwu.github.io/post-images/nforce-screencapture/05-recview.png)
+![录制完成预览页](https://nickwu.fun/post-images/nforce-screencapture/05-recview.png)
 
 有两个细节是专门为「发给客户」这个场景做的：
 
@@ -81,7 +81,7 @@ nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原�
 
 录制时可以同时录**麦克风旁白**（给客户讲 Demo 时能听到你的讲解）和**标签页/系统声音**。两路会自动混音成一条音轨，不会互相覆盖。
 
-![录制声音设置](https://iamnicwu.github.io/post-images/nforce-screencapture/07-record-settings.png "麦克风旁白开关与音量（20%–200%）、标签页/系统声音开关、麦克风授权与实时电平检测")
+![录制声音设置](https://nickwu.fun/post-images/nforce-screencapture/07-record-settings.png "麦克风旁白开关与音量（20%–200%）、标签页/系统声音开关、麦克风授权与实时电平检测")
 
 有一个系统限制值得提前知道：**macOS 的「整个屏幕 / 窗口」源本身不提供系统声音**，这是 macOS 的限制不是扩展的问题。要录网页里的声音，得选「**Chrome 标签页**」并勾选「同时分享标签页音频」。
 
@@ -91,7 +91,7 @@ nForce Screen Capture 是把这几件事合到一个 Chrome 扩展里。纯原�
 
 **没录到声音时不会静默产出一段哑巴视频** —— 预览页会直接标注「声音：麦克风旁白 / 无（默音）」，如果是没授权，还会给出就地授权并重录的入口。这个设计是从一次实际尴尬里改出来的。
 
-![预览页的声音标注](https://iamnicwu.github.io/post-images/nforce-screencapture/06-recview-audio.png)
+![预览页的声音标注](https://nickwu.fun/post-images/nforce-screencapture/06-recview-audio.png)
 
 ### 码率三档
 
@@ -127,7 +127,7 @@ Manifest V3 的 Service Worker **没有 DOM**，而 `MediaRecorder` 需要 DOM �
 
 截图或录制失败时最烦的是不知道哪一环断了。所以做了个诊断日志页，把全链路每一步都记下来：选源 → 注入页面 → 逐帧捕获 → 拼接/编码 → 保存。
 
-![诊断日志页](https://iamnicwu.github.io/post-images/nforce-screencapture/08-diag.png "环境信息（扩展版本 / 浏览器 / 系统 / 屏幕）+ 最近 300 条运行日志，可按级别筛选、一键复制全部、清空")
+![诊断日志页](https://nickwu.fun/post-images/nforce-screencapture/08-diag.png "环境信息（扩展版本 / 浏览器 / 系统 / 屏幕）+ 最近 300 条运行日志，可按级别筛选、一键复制全部、清空")
 
 日志只存在本机 `chrome.storage.local`，不上传。入口在失败时弹窗底部出现的「查看日志」链接，或者设置页 →「诊断」。
 
@@ -164,8 +164,8 @@ Manifest V3 的 Service Worker **没有 DOM**，而 `MediaRecorder` 需要 DOM �
 
 ---
 
-原文：[nForce Screen Capture：截图和录屏，一个扩展全包了](https://iamnicwu.github.io/post/nforce-screencapture/) · v1.0.0
+原文：[nForce Screen Capture：截图和录屏，一个扩展全包了](https://nickwu.fun/post/nforce-screencapture/) · v1.0.0
 标签：Chrome 扩展 · 截屏录屏 · 效率工具
 站内还写过几款同系列扩展，感兴趣可以顺着标签翻一翻。
 
-<!-- 发布提示：图片已换成绝对地址 https://iamnicwu.github.io/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->
+<!-- 发布提示：图片已换成绝对地址 https://nickwu.fun/post-images/…，需要先确认站点已部署到 GitHub Pages，否则图片会 404。 -->
