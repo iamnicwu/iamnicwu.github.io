@@ -86,6 +86,7 @@ if (serials.length > 1) {
 head("3. 记录取值");
 line(`  期望：${BLOG} 的 CNAME 指向 iamnicwu.github.io；${APEX} 与 www.${APEX} 全空`);
 const resolvers = RESOLVERS || ["223.5.5.5", "119.29.29.29", "8.8.8.8"];
+const apexSeen = []; // 各解析器上 apex 是否为空，用来识别「权威后端多版本」造成的摆动
 for (const r of resolvers) {
   const cname = dig(`+short CNAME ${BLOG} @${r}`)[0];
   const a = dig(`+short A ${BLOG} @${r}`).filter((x) => /^[\d.]+$/.test(x));
@@ -106,6 +107,14 @@ for (const r of resolvers) {
   line(`    ${APEX} A/AAAA   : ${apexA.length === 0 && apexAAAA.length === 0 ? "✅ 空（预期）" : "⚠️  有记录，本该删掉"} ${[...apexA, ...apexAAAA].join(", ")}`);
   const wwwStr = [wwwC, ...wwwA].filter(Boolean).join(", ");
   line(`    www.${APEX}      : ${wwwStr ? "⚠️  有记录，本该删掉  " + wwwStr : "✅ 空（预期）"}`);
+  apexSeen.push(apexA.length + apexAAAA.length);
+}
+// 各解析器结论不一致 = 权威后端 zone 多版本。阿里云那套上很常见，
+// 表现是「记录删了还在某些解析器上间歇解析」，TTL 往往是 1。
+// 不是用户没删干净，别让他反复去控制台折腾。
+if (new Set(apexSeen.map((n) => (n === 0 ? "空" : "有"))).size > 1) {
+  line(`  ⚠️  不同解析器结论不一致 → 权威后端 zone 多版本（阿里云已知问题），不是你没删干净。`);
+  line(`     表现：apex 记录删了还在个别解析器上间歇解析，TTL 常为 1。等后端同步即可，会自己收敛。`);
 }
 
 // ---------- 4. CAA ----------
@@ -192,6 +201,10 @@ line();
 line("判据速查：");
 line("  · caa_error 非 null + is_https_eligible=false → 卡在 GitHub 侧，等不到证书");
 line("  · 证书是 CN=*.github.io                       → 本域名的证书还没签发");
+line("  · 闸门开着但证书 1 小时不来                    → 先用 letsdebug.net 复核（判定 All OK 就说明");
+line("                                                  DNS/DNSSEC/CAA/HTTP-01 全没问题，是 GitHub 侧没排队），");
+line("                                                  再 remove + re-add 自定义域重启签发（实测 2 分钟出证书）");
 line("  · 多个 SOA 序列号                             → 权威 NS 多版本不一致（换托管商）");
 line("  · apex 无记录                                 → ✅ 预期，2026-10-12 起刻意留空");
+line("  · 各解析器对 apex 结论不一致                   → 后端多版本导致的间歇解析，不是没删干净");
 line();

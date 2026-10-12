@@ -41,6 +41,36 @@ Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 Gi
 - **判断证书签不出来的第一步是 `GET /repos/iamnicwu/iamnicwu.github.io/pages/health`**
   （首次返回 `202` + 空 body，重试到 `200`）。看 `caa_error` 和 `is_https_eligible`：
   只要 `is_https_eligible` 是 `false`，证书就永远不会签发，不用干等。
+- **闸门是开的、证书却一小时以上不来 → 别再等了，走两步（2026-10-12 实测 2 分钟解决）：**
+  1. **先用 [letsdebug.net](https://letsdebug.net/) 从 Let's Encrypt 的角度复核一遍。**
+     API 用法：`POST https://letsdebug.net/`，字段是 `domain` + **`method`**（**不是 `test`**），
+     返回 302 → GET 结果页。判定 **"All OK! No issues were found"** 就说明
+     DNS / DNSSEC / CAA / HTTP-01 **全都没问题**，问题在 GitHub 侧的签发队列。
+     （`.fun` 这类域也顺带查一下 DNSSEC —— 若父域给了 DS 但子域没有 DNSKEY，
+     Let's Encrypt 的严格校验会直接失败，而 GitHub 自己那个宽松的检查照样通过。）
+  2. **那就用官方 remedy 重启签发：删掉自定义域，等 10 分钟，再加回来。**
+     文档原话是 *"This will cancel and restart the provisioning process."*
+     实测这次是**重加后 2 分钟**就 `cert=approved` —— 因为任务之前压根没被排队，
+     一旦排队就是秒级完成。
+  ```bash
+  TOKEN=$(cat ~/.workbuddy/.gh-token)
+  curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+    https://api.github.com/repos/iamnicwu/iamnicwu.github.io/pages -d '{"cname":null}'
+  # 等 10 分钟（期间 blog.nickwu.fun 会 404，属预期）
+  curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+    https://api.github.com/repos/iamnicwu/iamnicwu.github.io/pages -d '{"cname":"blog.nickwu.fun"}'
+  # 证书就绪后再开强制 HTTPS
+  curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+    https://api.github.com/repos/iamnicwu/iamnicwu.github.io/pages -d '{"https_enforced":true}'
+  ```
+  ⚠️ 三个反直觉的点，不知道会白折腾：
+  - **`PUT {"https_enforced":true}` 在证书不存在时返回 404 `"The certificate does not exist yet"`** —— 这是预期，不是用法错。
+  - **清掉自定义域之后 `https_enforced` 会自己变成 `true`** —— 因为此时它指的是 `iamnicwu.github.io`，
+    GitHub 自家有合法证书。**所以 `enforced=true` 不代表你的自定义域有证书**，要看 `https_certificate` 和边缘证书的 subject。
+  - **清域之后首页还是 200，看着像没生效** —— 响应带 `Cache-Control: max-age=600`，Fastly 在喂缓存。
+    拿一个站点内已知页面去试（`http://blog.nickwu.fun/about/` → 404 即为已摘掉），或加 `?cb=<随机数>` 绕开。
+  - API 清 `cname` 在 legacy 模式会**真的删掉 master 上的 `CNAME` 文件**（GitHub 自动提交 `Delete CNAME`）。
+    所以「仓库里的 CNAME 文件」和「Pages 配置里的自定义域」是同一件事的两面，不能只改一边。
 - **不要用 Cloudflare 橙云代理绕过证书问题。** GitHub Support 明确警告：橙云会让 GitHub 看不到指向它的
   DNS 记录，**既阻碍签发、也会让已签发的证书无法自动续期**。要给 GitHub Pages 用 Cloudflare，必须灰云（DNS only）。
   适用范围要说清：这条只管**指向 GitHub 的记录**。指向别处的记录（比如 apex 上给 Redirect 规则用的那一条）

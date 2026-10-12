@@ -56,17 +56,33 @@ Vercel、Cloudflare 之类可能用别的 CA（Google Trust Services、ZeroSSL�
 | --- | --- | --- | --- |
 | CNAME | `blog` | `iamnicwu.github.io` | 600 |
 
-**需要删掉的**（历史遗留，2026-10-12 前存在）：
+**已删除的**（历史遗留，2026-10-12 全部清掉 ✅）：
 
-| 类型 | 主机记录 | 值 |
-| --- | --- | --- |
-| A | `@` | `185.199.108.153` / `.109.153` / `.110.153` / `.111.153` |
-| AAAA | `@` | `2606:50c0:8000::153` / `:8001::` / `:8002::` / `:8003::` |
-| CNAME | `www` | `iamnicwu.github.io` |
-| CAA | `@` | `0 issue "letsencrypt.org"`（如果当初真的存进去了） |
+| 类型 | 主机记录 | 值 | 状态 |
+| --- | --- | --- | --- |
+| A | `@` | `185.199.108.153` / `.109.153` / `.110.153` / `.111.153` | 已删 |
+| AAAA | `@` | `2606:50c0:8000::153` / `:8001::` / `:8002::` / `:8003::` | 已删 |
+| CNAME | `www` | `iamnicwu.github.io` | 已删 |
+| CAA | `@` | `0 issue "letsencrypt.org"` | 已删 |
 
-> 控制台路径：**云解析 DNS → 公网权威解析 → `nickwu.fun` → 解析设置**，
-> 逐条点右侧「删除」。删除后 `dig +short A nickwu.fun @223.5.5.5` 应该返回空。
+> 控制台路径：**云解析 DNS → 公网权威解析 → `nickwu.fun` → 解析设置**。
+> 删除后 `dig nickwu.fun @8.8.8.8` 应该是 **NOERROR + SOA**（NODATA），
+> `dig www.nickwu.fun @8.8.8.8` 应该是 **NXDOMAIN**。
+
+### ⚠️ 删完了某些解析器可能还返回旧值 —— 那是阿里云的锅，不是你没删干净
+
+实测：删干净后 `223.5.5.5` **仍间歇返回 apex 的 4 条 A**（TTL 显示 **1**），
+而 119.29.29.29 和 8.8.8.8 都已经是空的。
+
+根因是**阿里云云解析的权威后端跑着不同版本的 zone**。逐台直查 16 个后端，SOA 序列号出现过
+**7 个不同值**：`2022082217`（2022 年！）/ `2026081813` / `2026082509` / `2026082616` /
+`2026082617` / `2026082709` / `2026082815`。公共解析器命中哪台，就得到哪个版本的答案。
+
+> 判据：**各解析器结论不一致 = 后端多版本**，会自己收敛，不用反复去控制台折腾。
+> `scripts/check-domain.mjs` 检测到这种情况会直接提示。
+>
+> 顺带说，这也解释了当初 apex 的 CAA 查询为什么会在 GitHub 的解析器上间歇超时 ——
+> 同一套多版本后端。
 
 ## 让 apex 跳转到博客（如果将来想做）
 
@@ -100,6 +116,73 @@ Vercel、Cloudflare 之类可能用别的 CA（Google Trust Services、ZeroSSL�
    - Status code：**301**
 
 完整配置示例见 Cloudflare 文档的 [Set up redirects · Free plan](https://developers.cloudflare.com/learning-paths/get-started-free/other-features/redirects/)。
+
+## HTTPS 证书卡住时怎么办（2026-10-12 实测流程）
+
+**2026-10-12 换到 `blog.nickwu.fun` 之后，证书等了 2 小时 40 分也没来，最后是这么解决的 ——
+从动手到 `cert=approved` 只用了 2 分钟。** 过程值得完整记下来，因为症状很能骗人。
+
+### 怎么判断「不是配置问题，是 GitHub 侧没排队」
+
+| 检查 | 命令 / 工具 | 期望 |
+| --- | --- | --- |
+| 签发闸门 | `GET /pages/health` 的 `is_https_eligible` | `true` 且**连续多轮不翻** |
+| 证书状态 | `GET /pages` 的 `https_certificate` | 一直 `null` 就是没排队 |
+| Let's Encrypt 视角 | **letsdebug.net** | 判定 `All OK` |
+
+**letsdebug.net 是这一步最有价值的工具**（`dns/README.md` 之外没人提它）。它用 LE 官方那套
+测试从公网独立跑一遍，能一次性排除 DNS、DNSSEC、CAA、HTTP-01 可达性、速率限制。
+用法：
+
+```bash
+# 注意字段是 method，不是 test —— 写错会返回表单页而不是结果
+LOC=$(curl -s -D - -o /dev/null -X POST "https://letsdebug.net/" \
+  -d "domain=blog.nickwu.fun&method=http-01" | grep -i '^location:' | tr -d '\r' | awk '{print $2}')
+curl -s "https://letsdebug.net$LOC"
+```
+
+只要它说 `No issues were found`，你就**不用再怀疑自己的 DNS** —— 问题必在 GitHub 侧。
+
+> 顺带一个值得单独查的点：**DNSSEC 断链**。有人卡了几个月就是这个原因 ——
+> 父域给了 DS 但子域没有 DNSKEY，LE 的严格校验直接失败，而 **GitHub 自己那个宽松的检查照样通过**。
+> 查法：`dig +dnssec +short DS <域>` 有值、`dig +dnssec +short DNSKEY <域>` 为空 → 就是断链。
+> （`nickwu.fun` 实测两者都为空，即**未启用 DNSSEC**，不是这个原因。）
+
+### 处置：删自定义域再重新添加
+
+GitHub 文档原话：*"This will cancel and restart the provisioning process."*
+
+```bash
+TOKEN=$(cat ~/.workbuddy/.gh-token)
+curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/iamnicwu/iamnicwu.github.io/pages -d '{"cname":null}'
+# 等 10 分钟（期间 blog.nickwu.fun 会 404，属预期）
+curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/iamnicwu/iamnicwu.github.io/pages -d '{"cname":"blog.nickwu.fun"}'
+# 证书就绪后再开强制 HTTPS
+curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/iamnicwu/iamnicwu.github.io/pages -d '{"https_enforced":true}'
+```
+
+**实测时间线**：20:52:00 重加域名 → 20:52:02 还是 `cert=null` → **20:54:03 `cert=approved`**。
+也就是说重启后 2 分钟就签好了 —— 这反过来证明「之前根本没排队」。
+
+### 三个反直觉的点（不知道会白折腾很久）
+
+1. **`PUT {"https_enforced":true}` 在证书不存在时返回 404 `"The certificate does not exist yet"`。**
+   这是**预期**，不是用法错。
+2. **清掉自定义域之后 `https_enforced` 会自己变成 `true`** —— 因为此时它指向的是
+   `iamnicwu.github.io`，GitHub 自家有合法证书。**所以 `enforced=true` 完全不能说明你的自定义域有证书**，
+   要看 `https_certificate` 和边缘证书的 `subject`。
+3. **清域之后首页还是 200，看着像没生效。** 响应带 `Cache-Control: max-age=600`，Fastly 在喂缓存。
+   **判据**：拿站点内一个已知页面去试 —— `http://blog.nickwu.fun/about/` 返回 **404** 就证明摘掉了
+   （`about/` 在站里是存在的）。或者加 `?cb=<随机数>` 绕开缓存。
+   同理，清掉 apex 记录后 `dig +short` 可能仍返回旧值 —— **`dig +short` 只给"值"不给"状态"**，
+   判断记录在不在要看 `status:`（NXDOMAIN / NODATA / NOERROR）。
+
+> 另外：API 清 `cname` 在 legacy 模式会**真的删掉 master 根目录的 `CNAME` 文件**，
+> GitHub 会自动提交一个 `Delete CNAME`。所以「仓库里的 CNAME 文件」和「Pages 配置里的自定义域」
+> 是**同一件事的两面**，不要以为能只改一边。
 
 ## 给 GitHub Pages 用 Cloudflare 的铁律：灰云
 
@@ -204,3 +287,16 @@ Cloudflare 的 DNSSEC 默认关闭，**保持关闭**。开了就得去注册商
    dig 对没有 CAA 记录的子域名就是这么答的 —— 别把它当成"记录配错了"。
 7. **别用 `grep "a\|b"` 在 macOS 上做交替匹配**，BSD grep 不支持，会**静默零匹配**，
    看起来像"没有残留"其实什么都没查。用 `grep -E` 或 ripgrep。
+8. **`dig +short` 命中的可能是缓存，别据此下结论。** 删完 `www` 后
+   `dig +short CNAME www.nickwu.fun @223.5.5.5` 仍返回 `iamnicwu.github.io.`，
+   差点误判成"没删干净"。改用**完整应答**看 `status:` 才看清是 **NXDOMAIN**。
+   → 判断"记录在不在"必须看 `status:`（NXDOMAIN / NODATA / NOERROR），不能看有没有输出值。
+9. **本机解析器缓存会让 `curl` 的结论失真。** 删完 apex 记录后 `curl http://nickwu.fun/`
+   仍返回 404（看着像没生效），其实 macOS 本机解析器缓存还握着旧记录
+   （`dscacheutil -flushcache` 没 sudo 清不干净；`host` / Python `socket.gethostbyname` 同样被骗）。
+   → **验证 DNS 一律以 `dig @公共解析器` 为准**，不要用 `curl` 的连通性结论。
+10. **别高频捶权威 NS。** 用脚本逐台探测 16 个后端，应答会从 16/16 掉到 **0/16**
+    （阿里云的 query 限速）。`check-domain.mjs` 里那个 16 台循环也会触发，必要时降频。
+11. **旧哨兵会挂死。** 自己写的轮询脚本如果内部用裸 `openssl s_client` 而没有超时，
+    网络一抖就卡住（实测一轮卡了 47 分钟）。**一律用 `curl --max-time` 配
+    `AbortSignal.timeout()`**，并且每一步都落盘日志。
