@@ -10,6 +10,19 @@ Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 Gi
 - `hugo.toml` 的 `baseURL` 必须与之一致，否则 canonical / sitemap / RSS / 列表封面图都会指回 `iamnicwu.github.io`。
 - DNS 在阿里云（万网），apex 用 A 记录指向 GitHub Pages 的那四个 IP，`www` 用 CNAME 指向 `iamnicwu.github.io`。
 - 更换或删除域名后，**当天就把 DNS 记录清掉**，避免域被他人接管（GitHub Pages 的 domain takeover 风险）。
+- **顺序不能反：先改好 DNS，再设 Pages 自定义域。** 一旦设了自定义域，`iamnicwu.github.io` 会立刻 301 到新域名；
+  这时如果新域名的 DNS 还没生效，站点会有一段时间完全打不开。
+- 切域名后 HTTPS 证书要等 GitHub 自动签发（实测十几分钟到一小时，官方说最长 24h）。
+  期间 `https://` 会回落到 GitHub 的兜底通配证书 `CN=*.github.io` —— 用
+  `echo | openssl s_client -connect nickwu.fun:443 -servername nickwu.fun 2>&1 | openssl x509 -noout -subject`
+  一眼就能判断是不是还没签发。证书就绪后再打开 **Enforce HTTPS**（`https_enforced` 在设置自定义域时会被重置为 false）。
+  证书迟迟不来，先查两件事：**有没有多余的 A 记录**、**有没有 CAA 记录挡着 letsencrypt.org** —— 这两个都会让签发静默失败。
+- **判断证书签不出来的第一步是 `GET /repos/iamnicwu/iamnicwu.github.io/pages/health`**
+  （首次返回 `202` + 空 body，重试到 `200`）。看 apex 的 `caa_error` 和 `is_https_eligible`：
+  只要 `is_https_eligible` 是 `false`，证书就永远不会签发，不用干等。
+- DNS 记录的可导入版本在 [`dns/nickwu.fun.zone`](./dns/nickwu.fun.zone)；
+  **该目录的 [`README.md`](./dns/README.md) 记录了 2026-10-12 把 DNS 托管迁到 Cloudflare 的原因与步骤**
+  （阿里云云解析当时 zone 多版本不一致、AliDNS 间歇返回陈旧的 Vercel IP、GitHub 解析器查 CAA 超时）。
 
 ## 写新文章
 
@@ -76,6 +89,7 @@ cover:
 | `static/post-images/` | 配图 |
 | `shares/` | 对外平台的可粘贴版本，由脚本生成，**不要手工改** |
 | `scripts/export-shares.mjs` | 生成 `shares/` |
+| `dns/` | 域名解析记录（可导入的 zone 文件）与迁移说明 |
 
 搜索走 PaperMod 的 Fuse.js 纯前端方案，靠 `[outputs] home` 里多输出的那个 `index.json`。
 中文检索把 `params.fuseOpts.threshold` 放宽到 `0.4` 才有实用效果。
