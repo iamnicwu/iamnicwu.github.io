@@ -1,29 +1,42 @@
-; nickwu.fun —— GitHub Pages 的 DNS 记录（BIND zone file）
+; nickwu.fun —— 博客的 DNS 记录（BIND zone file）
 ;
 ; 用途：直接导入 Cloudflare（DNS → Records → Import and Export → Import DNS records），
-;       避免手抄 10 条记录出错。
+;       避免手抄记录出错。
 ;
-; ⚠️ 导入后必须逐条确认 **Proxy status 全部是 DNS only（灰色云）**。
-;    开着橙云会让 GitHub 无法校验域名，Let's Encrypt 也拿不到证书。
+; ⚠️ 导入后必须逐条确认 **Proxy status 全是 DNS only（灰色云）**。
+;    开着橙云会让 GitHub 看不到指向它的 DNS 记录，既阻碍证书签发、
+;    也会让已签发的证书无法自动续期（GitHub Support 的原话）。
 ;
 ; ⚠️ 导入前先检查 Cloudflare 自动扫描出来的记录里有没有
 ;    `76.76.21.21` 或 `cname.vercel-dns.com` 之类的 Vercel 残留 —— 有就删掉。
 ;
-; 这些值来自 GitHub Pages 官方文档，四个 A 对应 apex，四个 AAAA 对应 IPv6。
-; www 的 CNAME 指向 <用户名>.github.io，**不带仓库名**。
-;
 $TTL 600
-nickwu.fun.      IN  A      185.199.108.153
-nickwu.fun.      IN  A      185.199.109.153
-nickwu.fun.      IN  A      185.199.110.153
-nickwu.fun.      IN  A      185.199.111.153
-nickwu.fun.      IN  AAAA   2606:50c0:8000::153
-nickwu.fun.      IN  AAAA   2606:50c0:8001::153
-nickwu.fun.      IN  AAAA   2606:50c0:8002::153
-nickwu.fun.      IN  AAAA   2606:50c0:8003::153
-www.nickwu.fun.  IN  CNAME  iamnicwu.github.io.
 
-; 显式声明只允许 Let's Encrypt 签证书。
-; 不只是安全实践 —— 它还能让 CAA 查询在 nickwu.fun 这一级就「直接命中」，
-; 不必走「NODATA + 向 .fun 顶级域递归」那条在阿里云 NS 上会超时的路径。
+; ── 博客本体 ──────────────────────────────────────────────────────────
+; 2026-10-12 起博客在 blog.nickwu.fun。
+; 用子域名而不是 apex 是**刻意的**：子域名走 CNAME，按 RFC 8659，
+; CAA 查询遇到 CNAME 要跟着走到目标域，于是校验落在 github.io
+; （GitHub 自家 DNS）上，不会去问第三方权威 NS。
+; apex 只能用 A 记录、CAA 只能直查 nickwu.fun 的权威 NS，会间歇性超时
+; （GitHub 的 Dnsruby::ResolvTimeout），导致 is_https_eligible 反复抖、
+; 证书永远签不出来。
+blog.nickwu.fun.  IN  CNAME  iamnicwu.github.io.
+
+; ── 显式声明只允许 Let's Encrypt 签证书 ────────────────────────────────
+; 顺带也保护了后续可能挂在 nickwu.fun 下的其它服务。
 nickwu.fun.      IN  CAA    0 issue "letsencrypt.org"
+
+; ── apex（已不再承载博客）──────────────────────────────────────────────
+; 下面这四条 A + 四条 AAAA 是 apex 指向 GitHub Pages 的写法。博客搬到
+; blog.nickwu.fun 之后它们不再需要 —— 保留着只会让 nickwu.fun 指向一个
+; 不认识的 Host，返回 GitHub 的 404 页。想给 apex 派别的用场（比如把
+; LobeChat 放回来）就换成对应的记录；不用就整段删掉，让 nickwu.fun 不解析。
+;
+; nickwu.fun.      IN  A      185.199.108.153
+; nickwu.fun.      IN  A      185.199.109.153
+; nickwu.fun.      IN  A      185.199.110.153
+; nickwu.fun.      IN  A      185.199.111.153
+; nickwu.fun.      IN  AAAA   2606:50c0:8000::153
+; nickwu.fun.      IN  AAAA   2606:50c0:8001::153
+; nickwu.fun.      IN  AAAA   2606:50c0:8002::153
+; nickwu.fun.      IN  AAAA   2606:50c0:8003::153

@@ -1,27 +1,37 @@
 # Nick's blog
 
-Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 GitHub Pages，自定义域 **https://nickwu.fun/**。
+Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 GitHub Pages，自定义域 **https://blog.nickwu.fun/**。
 
-## 自定义域（nickwu.fun）—— 改这里之前先读
+## 自定义域（blog.nickwu.fun）—— 改这里之前先读
 
-- `static/CNAME` 里写着 `nickwu.fun`。**这个文件必须留在 `static/` 下**：
+**域名为什么是子域名而不是 apex：** 子域名走 CNAME，而按 RFC 8659，CAA 查询遇到 CNAME 要**跟着走到目标域**，
+于是校验落在 `github.io`（GitHub 自家 DNS）上。apex 只能用 A 记录，CAA 只能直查 `nickwu.fun` 的权威 NS，
+在阿里云那套 NS 上会**间歇性超时**（GitHub 的 `Dnsruby::ResolvTimeout`），
+`is_https_eligible` 于是在 true/false 之间反复抖，**证书永远签不出来**。
+换成子域名后闸门天生不抖 —— 这是 2026-10-12 折腾大半天的最终结论。
+
+- `static/CNAME` 里写着 `blog.nickwu.fun`。**这个文件必须留在 `static/` 下**：
   Pages 的构建类型是 `legacy`（从 `master` 分支根目录发布），删掉 CNAME 文件等于取消自定义域。
   而 `scripts/deploy-via-api.mjs` 是「整棵新树覆盖 master」，所以 CNAME 只能由 Hugo 从 `static/` 带出来。
 - `hugo.toml` 的 `baseURL` 必须与之一致，否则 canonical / sitemap / RSS / 列表封面图都会指回 `iamnicwu.github.io`。
-- DNS 在阿里云（万网），apex 用 A 记录指向 GitHub Pages 的那四个 IP，`www` 用 CNAME 指向 `iamnicwu.github.io`。
+- DNS：`blog` 用 CNAME 指向 `iamnicwu.github.io`（**不带仓库名**）。
+  `nickwu.fun` 的 apex 已不再承载博客，A/AAAA 记录可以按需清理或另作他用。
 - 更换或删除域名后，**当天就把 DNS 记录清掉**，避免域被他人接管（GitHub Pages 的 domain takeover 风险）。
 - **顺序不能反：先改好 DNS，再设 Pages 自定义域。** 一旦设了自定义域，`iamnicwu.github.io` 会立刻 301 到新域名；
   这时如果新域名的 DNS 还没生效，站点会有一段时间完全打不开。
-- 切域名后 HTTPS 证书要等 GitHub 自动签发（实测十几分钟到一小时，官方说最长 24h）。
-  期间 `https://` 会回落到 GitHub 的兜底通配证书 `CN=*.github.io` —— 用
-  `echo | openssl s_client -connect nickwu.fun:443 -servername nickwu.fun 2>&1 | openssl x509 -noout -subject`
+- 切域名后 HTTPS 证书要等 GitHub 自动签发（**GitHub Support 的说法是「触发重查后证书请求约需一小时」**，
+  官方文档说最长 24h）。期间 `https://` 会回落到 GitHub 的兜底通配证书 `CN=*.github.io` —— 用
+  `echo | openssl s_client -connect blog.nickwu.fun:443 -servername blog.nickwu.fun 2>&1 | openssl x509 -noout -subject`
   一眼就能判断是不是还没签发。证书就绪后再打开 **Enforce HTTPS**（`https_enforced` 在设置自定义域时会被重置为 false）。
   证书迟迟不来，先查两件事：**有没有多余的 A 记录**、**有没有 CAA 记录挡着 letsencrypt.org** —— 这两个都会让签发静默失败。
 - **判断证书签不出来的第一步是 `GET /repos/iamnicwu/iamnicwu.github.io/pages/health`**
-  （首次返回 `202` + 空 body，重试到 `200`）。看 apex 的 `caa_error` 和 `is_https_eligible`：
+  （首次返回 `202` + 空 body，重试到 `200`）。看 `caa_error` 和 `is_https_eligible`：
   只要 `is_https_eligible` 是 `false`，证书就永远不会签发，不用干等。
+- **不要用 Cloudflare 橙云代理绕过证书问题。** GitHub Support 明确警告：橙云会让 GitHub 看不到指向它的
+  DNS 记录，**既阻碍签发、也会让已签发的证书无法自动续期**。要给 GitHub Pages 用 Cloudflare，必须灰云（DNS only）。
+- 域名体检一条命令搞定：`node scripts/check-domain.mjs`（`baseURL` 从 `hugo.toml` 读，换域名不用改脚本）。
 - DNS 记录的可导入版本在 [`dns/nickwu.fun.zone`](./dns/nickwu.fun.zone)；
-  **该目录的 [`README.md`](./dns/README.md) 记录了 2026-10-12 把 DNS 托管迁到 Cloudflare 的原因与步骤**
+  **该目录的 [`README.md`](./dns/README.md) 记录了 2026-10-12 的迁移过程**
   （阿里云云解析当时 zone 多版本不一致、AliDNS 间歇返回陈旧的 Vercel IP、GitHub 解析器查 CAA 超时）。
 
 ## 写新文章

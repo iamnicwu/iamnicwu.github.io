@@ -23,4 +23,4 @@ if git diff --cached --quiet; then
 fi
 git commit -m "Deploy site: ${1:-$(date '+%Y-%m-%d %H:%M')}"
 git push origin master
-echo "==> 部署完成！稍等一两分钟 GitHub Pages 生效: https://nickwu.fun/"
+echo "==> 部署完成！稍等一两分钟 GitHub Pages 生效: https://blog.nickwu.fun/"
