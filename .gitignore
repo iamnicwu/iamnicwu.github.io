@@ -1,0 +1,7 @@
+public/
+resources/
+
+# Hugo 每次构建都会生成这个锁文件，属于中间产物，不该进仓库
+.hugo_build.lock
+
+.DS_Store

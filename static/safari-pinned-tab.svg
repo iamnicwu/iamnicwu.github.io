@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#0B5394">
+  <!-- Safari 固定标签页的 mask-icon：只认单色剪影，所以按 favicon 的圆形徽章轮廓取个「环」。
+       16px 下再细的笔画都会糊成一团，保持极简反而更清楚。 -->
+  <path fill-rule="evenodd" d="M50 2a48 48 0 1 0 0 96 48 48 0 0 0 0-96Zm0 10a38 38 0 1 1 0 76 38 38 0 0 1 0-76Z"/>
+  <path d="M50 28 68 72H59.8l-3.1-8H43.3l-3.1 8H32Zm0 17.6L45.4 58h9.2Z"/>
+</svg>

@@ -1,0 +1,198 @@
+/* ==========================================================================
+   站点级样式补充。放在 assets/css/extended/ 下，PaperMod 会自动拼到主题样式后面。
+   只用主题已有的 CSS 变量，别写死颜色，深浅色才能跟着走。
+   ========================================================================== */
+
+/* --- 文章配图：<figure> + 图注（见 layouts/_markup/render-image.html）------ */
+.post-figure {
+  margin: 2rem 0;
+}
+
+.post-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 1.4);
+}
+
+.post-figure figcaption {
+  margin-top: 10px;
+  font-size: 0.86em;
+  line-height: 1.6;
+  color: var(--secondary);
+  text-align: center;
+}
+
+/* 图标类小图：别把 256px 的图标拉成整栏宽 */
+.post-figure.is-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post-figure.is-icon img {
+  width: 140px;
+  height: 140px;
+  border: none;
+}
+
+/* 侧边栏截图只有 400px 宽，正文栏是 720px —— 顺着放大 1.8 倍会在 Retina 上明显发虚。
+   这类图按接近原始宽度居中显示：既保持清晰，也如实传达了「这是侧边栏里的样子」。 */
+.post-figure.is-narrow {
+  max-width: 440px;
+  margin-inline: auto;
+}
+
+/* 文章里的表格：窄屏可横向滚动，不要撑破布局 */
+.md-content .table-wrap {
+  overflow-x: auto;
+}
+
+.md-content table {
+  font-size: 0.94em;
+}
+
+.md-content table th {
+  white-space: nowrap;
+}
+
+/* --- 首页：文章列表卡片化一点 --------------------------------------------- */
+.post-entry {
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.post-entry:hover {
+  transform: translateY(-2px);
+  border-color: var(--secondary);
+}
+
+/* 列表缩略图统一高度。截图大多是竖长的整屏图，不裁的话一条就占满一屏 */
+.post-entry .entry-cover {
+  max-height: 260px;
+  overflow: hidden;
+}
+
+.post-entry .entry-cover img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+@media (max-width: 640px) {
+  .post-entry .entry-cover,
+  .post-entry .entry-cover img {
+    max-height: 200px;
+    height: 200px;
+  }
+}
+
+/* --- 「项目」页卡片 ------------------------------------------------------- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin: 24px 0 8px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--entry);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--secondary);
+}
+
+.project-card > a.project-cover {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: var(--code-bg);
+}
+
+.project-card > a.project-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.project-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px 20px;
+}
+
+.project-head {
+  display: flex;
+  align-items: baseline;
+  /* 标题左、版本号右：这样长标题换行时也不会把版本号挤成 v1.0 / .0 两截 */
+  justify-content: space-between;
+  gap: 9px;
+  margin: 0;
+  font-size: 1.16em;
+}
+
+.project-head a {
+  min-width: 0;
+  color: var(--primary);
+}
+
+.project-version {
+  /* 徽章是不可断的原子单元，宁可让标题换行也不要它内部折行 */
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: var(--code-bg);
+  font-size: 0.72em;
+  font-weight: 500;
+  color: var(--secondary);
+}
+
+.project-body p {
+  flex: 1;
+  margin: 0;
+  font-size: 0.95em;
+  color: var(--secondary);
+}
+
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.project-actions a {
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 0.88em;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--theme);
+}
+
+.project-actions a:hover {
+  border-color: var(--secondary);
+}
+
+@media (max-width: 640px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}

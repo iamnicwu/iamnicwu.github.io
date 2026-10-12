@@ -1,0 +1,13 @@
+{{- /* 图片渲染钩子：带 title 的图片渲染成 <figure> + 图注，没有的话就是普通 <img>。
+       配图都放在 static/post-images/ 下，不走资源管线，所以这里不做 Resize。 */ -}}
+{{- $dest := .Destination -}}
+{{- $text := .Text -}}
+{{- $title := .Title -}}
+{{- if $title -}}
+<figure class="post-figure">
+  <img src="{{ $dest | safeURL }}" alt="{{ $text }}" loading="lazy" decoding="async">
+  <figcaption>{{ $title }}</figcaption>
+</figure>
+{{- else -}}
+<img src="{{ $dest | safeURL }}" alt="{{ $text }}" loading="lazy" decoding="async">
+{{- end -}}

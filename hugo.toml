@@ -1,0 +1,132 @@
+baseURL = "https://iamnicwu.github.io/"
+defaultContentLanguage = "zh"
+
+title = "Nick's blog"
+theme = "PaperMod"
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+expirePosts = false
+
+# 用户主页域名下 Pages 会默认跑 Jekyll，加 .nojekyll 跳过（已放在 static/）
+paginate = 8
+enableEmoji = true
+
+# 只留 tag，不启用 categories —— 这个站按标签组织，多一个空分类页只是噪音
+[taxonomies]
+  tag = "tags"
+
+[permalinks]
+  posts = "/post/:slug/"
+
+# 首页额外输出 JSON，供站内搜索（PaperMod 用 Fuse.js 做纯前端检索）
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[minify]
+  disableXML = false
+  minifyOutput = true
+
+[params]
+  env = "production"
+  # 站点简介。原句是站名底下那行「閒看兒童捉柳花」，后面补了半句让搜索引擎看得懂
+  description = "閒看兒童捉柳花 · Chrome 扩展与前端工程笔记"
+  author = "Nick Wu"
+  defaultTheme = "auto"
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowToc = true
+  ShowRelatedContent = true
+  disableSpecial1stPost = false
+  comments = false   # 如需评论见 README 注释说明（建议 giscus，勿用会暴露 secret 的 Gitalk）
+
+  [params.label]
+    icon = "images/avatar.png"
+    iconHeight = 35
+
+  [params.profileMode]
+    enabled = false
+
+  [params.homeInfoParams]
+    Title = "Nick's blog"
+    Content = """
+写 JavaScript 为主，平时打交道最多的是浏览器扩展、前端工程，和一些把重复劳动变自动化的脚本。
+
+这里的文章基本都是「先做了个东西，再把取舍和踩过的坑写下来」，最集中的一块是 [nForce 系列的四款 Chrome 扩展](/projects/)。
+"""
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/iamnicwu"
+
+  # 站内搜索（Fuse.js）参数。中文检索把 threshold 放宽一点更实用
+  [params.fuseOpts]
+    isCaseSensitive = false
+    shouldSort = true
+    location = 0
+    distance = 1000
+    threshold = 0.4
+    minMatchCharLength = 1
+    keys = ["title", "permalink", "summary", "content"]
+
+[params.assets]
+  favicon = "favicon.ico"
+
+[params.cover]
+  # 封面只在列表页出现，正文页不重复显示（各篇 front matter 里也写了 hiddenInSingle）
+  linkFullImages = false
+  responsiveImages = false
+
+[[menu.main]]
+  identifier = "archives"
+  name = "归档"
+  url = "/archives/"
+  weight = 5
+
+[[menu.main]]
+  identifier = "projects"
+  name = "项目"
+  url = "/projects/"
+  weight = 8
+
+[[menu.main]]
+  identifier = "tags"
+  name = "标签"
+  url = "/tags/"
+  weight = 10
+
+[[menu.main]]
+  identifier = "search"
+  name = "搜索"
+  url = "/search/"
+  weight = 12
+
+[[menu.main]]
+  identifier = "about"
+  name = "关于"
+  url = "/about/"
+  weight = 15
+
+[sitemap]
+  changefreq = "weekly"
+  priority = 0.5
+  filename = "sitemap.xml"
+
+[markup]
+  [markup.highlight]
+    # 必须显式为 false：PaperMod 的深浅色代码高亮依赖 class，用内联样式会失效
+    noClasses = false
+    style = "dracula"
+    lineNos = false
+    codeFences = true
+    guessSyntax = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      # 允许正文里写原生 HTML（「项目」页的卡片就是 HTML）
+      unsafe = true
+    [markup.goldmark.parser]
+      # 图片单独成段时不要再套一层 <p>，否则 <figure> 会嵌在 <p> 里（无效 HTML）
+      wrapStandAloneImageWithinParagraph = false

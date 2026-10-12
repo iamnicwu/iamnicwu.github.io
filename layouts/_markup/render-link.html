@@ -1,0 +1,14 @@
+{{- /* 链接渲染钩子：站外链接新窗口打开并加 rel，站内相对链接补上 baseURL 前缀。 */ -}}
+{{- $dest := .Destination -}}
+{{- $u := urls.Parse $dest -}}
+{{- $baseHost := (urls.Parse site.BaseURL).Host -}}
+{{- $external := and (in (slice "http" "https") $u.Scheme) (ne $u.Host $baseHost) -}}
+{{- /* 只有真正相对的路径（foo/bar、../x）才过 relURL。以 / 开头的根相对路径
+       已经是最终形态，再过一次 relURL 会拼成 //tags/ 这种协议相对 URL，
+       浏览器会当成 https://tags/ 从而 404。以 # 开头的锚点同理跳过。 */ -}}
+{{- if and (not $u.IsAbs) (not (hasPrefix $dest "/")) (not (hasPrefix $dest "#")) -}}
+  {{- $dest = $dest | relURL -}}
+{{- end -}}
+<a href="{{ $dest | safeURL }}"
+  {{- with .Title }} title="{{ . }}"{{ end }}
+  {{- if $external }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Text | safeHTML }}</a>
