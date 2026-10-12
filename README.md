@@ -50,6 +50,10 @@ Hugo + [PaperMod](https://github.com/adityatelange/hugo-PaperMod)，部署在 Gi
   2026-10-12 的排查全过程：阿里云 zone 多版本不一致、AliDNS 间歇返回陈旧的 Vercel IP、
   GitHub 解析器查 apex 的 CAA 超时）。**动 DNS 之前先读它。**
 - 域名体检一条命令搞定：`node scripts/check-domain.mjs`（`baseURL` 从 `hugo.toml` 读，换域名不用改脚本）。
+- 站点内容体检：`node scripts/verify-live.mjs` —— 从首页 BFS 爬遍站内链接逐个请求。
+  改域名 / 换主题 / 动渲染钩子之后跑一次。**它只认 `<a href>` 这类真标签，不扫全文**：
+  文章里有 `xpath=//a[@href='/home']` 这种讲语法的文本，宽松扫法会去请求 `/home` 拿到 404，
+  报出一个根本不存在的故障（踩过）。
 
 ## 写新文章
 
@@ -116,6 +120,8 @@ cover:
 | `static/post-images/` | 配图 |
 | `shares/` | 对外平台的可粘贴版本，由脚本生成，**不要手工改** |
 | `scripts/export-shares.mjs` | 生成 `shares/` |
+| `scripts/check-domain.mjs` | 域名/DNS/证书体检（解析、CAA、Pages 闸门、TLS） |
+| `scripts/verify-live.mjs` | 线上全站体检（BFS 爬遍站内链接，逐个查状态码） |
 | `dns/` | 域名解析记录（可导入的 zone 文件）与迁移说明 |
 
 搜索走 PaperMod 的 Fuse.js 纯前端方案，靠 `[outputs] home` 里多输出的那个 `index.json`。
