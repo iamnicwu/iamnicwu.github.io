@@ -7,6 +7,9 @@
 # 在阿里云那套 NS 上会间歇性超时（GitHub 的 Dnsruby::ResolvTimeout），证书因此永远签不出来。
 baseURL = "https://blog.nickwu.fun/"
 defaultContentLanguage = "zh"
+# 文章里的 date 按本地时间写（如 2026-10-19T00:10:00+08:00）。
+# 不设时区时 Hugo 按 UTC 比较，凌晨发的文章会被 buildFuture = false 挡在外面。
+timeZone = "Asia/Shanghai"
 
 title = "Nick's blog"
 theme = "PaperMod"

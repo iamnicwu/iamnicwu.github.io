@@ -10,10 +10,10 @@ description: "四款 nForce 系列 Chrome 扩展，以及它们各自的介绍�
 <div class="project-grid">
 
 <article class="project-card">
-  <a class="project-cover" href="{{< relref "posts/nforce-tools.md" >}}"><img src="/post-images/nforce-tools/01-home.png" alt="nForce Tools 的功能中心" loading="lazy"></a>
+  <a class="project-cover" href="{{< relref "posts/nforce-tools.md" >}}"><img src="/post-images/nforce-tools-v415/01-home.png" alt="nForce Tools 的新首页" loading="lazy"></a>
   <div class="project-body">
-    <h2 class="project-head"><a href="{{< relref "posts/nforce-tools.md" >}}">nForce Tools</a><span class="project-version">v4.4.0</span></h2>
-    <p>给 Salesforce 用户的一套浏览器内数据工作台：连接组织、批量查单、拉报表、跑 Bulk API，全在本地完成。</p>
+    <h2 class="project-head"><a href="{{< relref "posts/nforce-tools.md" >}}">nForce Tools</a><span class="project-version">v4.15.0</span></h2>
+    <p>Salesforce 的日常操作收在一个侧边栏里：连组织、批量查单、看报表、跑 Bulk API、看 Org 用量，数据不经过任何服务器。</p>
     <div class="project-actions">
       <a href="{{< relref "posts/nforce-tools.md" >}}">读介绍</a>
       <a href="https://github.com/iamnicwu/nForce-tools" target="_blank" rel="noopener">源码</a>
@@ -25,7 +25,7 @@ description: "四款 nForce 系列 Chrome 扩展，以及它们各自的介绍�
   <a class="project-cover" href="{{< relref "posts/nforce-todo.md" >}}"><img src="/post-images/nforce-todo/01-popup.png" alt="nForce Todo 弹窗" loading="lazy"></a>
   <div class="project-body">
     <h2 class="project-head"><a href="{{< relref "posts/nforce-todo.md" >}}">nForce Todo</a><span class="project-version">v1.1.0</span></h2>
-    <p>一行语法记下待办，看板与四象限推进，循环任务到点提醒，并把每天的任务快照自动备份进 ima 知识库。</p>
+    <p>快捷键、右键、弹窗都能记，一行语法写完日期和优先级，看板推进，循环任务到点提醒，每天的快照自动备份到 ima。</p>
     <div class="project-actions">
       <a href="{{< relref "posts/nforce-todo.md" >}}">读介绍</a>
       <a href="https://github.com/iamnicwu/nForce-Todo" target="_blank" rel="noopener">源码</a>
@@ -37,7 +37,7 @@ description: "四款 nForce 系列 Chrome 扩展，以及它们各自的介绍�
   <a class="project-cover" href="{{< relref "posts/nforce-screencapture.md" >}}"><img src="/post-images/nforce-screencapture/03-editor.png" alt="nForce Screen Capture 的标注编辑器" loading="lazy"></a>
   <div class="project-body">
     <h2 class="project-head"><a href="{{< relref "posts/nforce-screencapture.md" >}}">nForce Screen Capture</a><span class="project-version">v1.0.0</span></h2>
-    <p>截图与录屏二合一：可视区、整页长截图、手动滚动拼接、框选区域，以及带旁白的 MP4 演示录制。</p>
+    <p>截图和录屏合在一个扩展里：可视区、整页长截图、手动滚动拼接、框选区域，加上带旁白的 MP4 录制和标注编辑器。</p>
     <div class="project-actions">
       <a href="{{< relref "posts/nforce-screencapture.md" >}}">读介绍</a>
       <a href="https://github.com/iamnicwu/nForce-screenCapture" target="_blank" rel="noopener">源码</a>
@@ -49,7 +49,7 @@ description: "四款 nForce 系列 Chrome 扩展，以及它们各自的介绍�
   <a class="project-cover" href="{{< relref "posts/nforce-autotest.md" >}}"><img src="/post-images/nforce-autotest/00-cover.jpg" alt="nForce AutoTest 品牌横幅" loading="lazy"></a>
   <div class="project-body">
     <h2 class="project-head"><a href="{{< relref "posts/nforce-autotest.md" >}}">nForce AutoTest</a><span class="project-version">v1.0.0</span></h2>
-    <p>轻量 Web 自动化测试扩展：手写用例或录制成用例，跑完看结果汇总，还能导出成可直接跑的 Playwright 脚本。</p>
+    <p>轻量 Web 自动化测试扩展：用例可以手写也可以录，跑完看每步结果和失败截图，还能导出成 Playwright 脚本放进 CI。</p>
     <div class="project-actions">
       <a href="{{< relref "posts/nforce-autotest.md" >}}">读介绍</a>
       <a href="https://github.com/iamnicwu/nForce-autoTest" target="_blank" rel="noopener">源码</a>

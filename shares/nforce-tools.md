@@ -1,10 +1,12 @@
 # nForce Tools：把 Salesforce 的日常操作收进一个侧边栏
 
-> 一款给 Salesforce 用户用的浏览器内数据工作台 —— 连接组织、批量查单、拉报表、跑 Bulk API、盯 Org 用量，全部在本地完成，不经任何中转服务器。
+> Salesforce 的日常操作都收在一个侧边栏里：连组织、批量查单、拉报表、跑 Bulk API、看 Org 用量。数据从浏览器直接打到 Salesforce，中间不经过服务器。
 
-做 Salesforce 相关的工作，一天里很大一块时间花在重复动作上：把一批订单号粘进 SOQL 里查一遍、导个报表看哪个订单卡住了、翻 Data Loader 查一条记录状态。每次都要开新标签、登录、拼查询，来回几次思路就断了。
+做 Salesforce 相关的工作，很多时间花在重复动作上：把一批订单号拼进 SOQL 查一遍，导个报表看哪个订单卡住，翻 Data Loader 查一条记录。每次都要开新标签、登录、拼查询，来回几次思路就断了。
 
-nForce Tools 就是冲这件事做的：一个 Chrome 扩展，把那些"顺手要查一下"的操作收到浏览器侧边栏里。数据从浏览器直接打到 Salesforce，中间不经过任何服务器。
+nForce Tools 把这些事收到浏览器侧边栏里。数据从浏览器直接打到 Salesforce，中间不经过任何服务器。
+
+这篇写的是 v4.4 时的样子。后来加的全局搜索、日志查看器、批量查询，单独记在[另一篇](https://blog.nickwu.fun/post/nforce-tools-v415/)。
 
 ![nForce Tools 的功能中心](https://blog.nickwu.fun/post-images/nforce-tools/01-home.png "首页是一个图标化的功能中心，按「连接与环境 / LTS / 数据分析 / OTT / PCD / CVP7 / 工具」分组。最近用得多功能会自动排到「常用功能」那一栏里去")
 
@@ -164,7 +166,7 @@ https://*.cloudforce.com/*   ...（含 .cn / .mil / .mcas.ms 等变体）
 
 ---
 
-原文：[nForce Tools：把 Salesforce 的日常操作收进一个侧边栏](https://blog.nickwu.fun/post/nforce-tools/) · v4.4.0
+原文：[nForce Tools：把 Salesforce 的日常操作收进一个侧边栏](https://blog.nickwu.fun/post/nforce-tools/) · v4.15.0
 标签：Salesforce · Chrome 扩展 · 效率工具
 站内还写过几款同系列扩展，感兴趣可以顺着标签翻一翻。
 

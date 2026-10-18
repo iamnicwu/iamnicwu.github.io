@@ -1,10 +1,10 @@
 # nForce AutoTest：一个插件形态的 Web 自动化测试工具
 
-> 零依赖、免构建的 Chrome 自动化测试扩展：手写用例或用录制生成用例，跑完看每步通过/失败/耗时与失败截图，还能把用例导出成可直接 pytest 运行的 Playwright 脚本。
+> Chrome 自动化测试扩展，装上就能用，不用配环境管 driver。用例可以手写，也可以边操作边录，跑完看每一步的结果和失败截图，还能导出成 Playwright 脚本放进 CI。
 
-做一个内部系统，最烦的不是写功能，是每次改完都得手动点一遍确认没坏。装 Selenium 或者 Playwright 又不划算 —— 环境要配、driver 要管、团队里非开发同学根本用不起来。
+做内部系统，改完总要手动点一遍才放心。装 Selenium 或者 Playwright 又有点重：环境要配，driver 要管，团队里不写代码的同事基本用不起来。
 
-nForce AutoTest 是想走另一条路：**用浏览器扩展做测试工具**。装了就能用，不用 npm install，不用 driver 版本管理，而且天然跑在你已经登录的浏览器里。
+nForce AutoTest 换了个做法，用浏览器扩展做测试。装上就能用，不用 npm install，也不用管 driver。它跑在你已经登录的浏览器里，省掉了登录这一步。
 
 ![nForce AutoTest 图标](https://blog.nickwu.fun/post-images/nforce-autotest/00-icon.png)
 

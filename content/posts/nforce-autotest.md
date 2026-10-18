@@ -9,7 +9,7 @@ tags: ["Chrome 扩展", "自动化测试", "开发工具"]
 # 改版本号时记得同步 content/projects.md 里的徽章。
 repo: "https://github.com/iamnicwu/nForce-autoTest"
 version: "v1.0.0"
-summary: "零依赖、免构建的 Chrome 自动化测试扩展：手写用例或用录制生成用例，跑完看每步通过/失败/耗时与失败截图，还能把用例导出成可直接 pytest 运行的 Playwright 脚本。"
+summary: "Chrome 自动化测试扩展，装上就能用，不用配环境管 driver。用例可以手写，也可以边操作边录，跑完看每一步的结果和失败截图，还能导出成 Playwright 脚本放进 CI。"
 showToc: true
 cover:
   # 项目里只有 256x256 的方形图标，直接当列表缩略图会被裁掉大半，
@@ -20,9 +20,9 @@ cover:
   relative: false
 ---
 
-做一个内部系统，最烦的不是写功能，是每次改完都得手动点一遍确认没坏。装 Selenium 或者 Playwright 又不划算 —— 环境要配、driver 要管、团队里非开发同学根本用不起来。
+做内部系统，改完总要手动点一遍才放心。装 Selenium 或者 Playwright 又有点重：环境要配，driver 要管，团队里不写代码的同事基本用不起来。
 
-nForce AutoTest 是想走另一条路：**用浏览器扩展做测试工具**。装了就能用，不用 npm install，不用 driver 版本管理，而且天然跑在你已经登录的浏览器里。
+nForce AutoTest 换了个做法，用浏览器扩展做测试。装上就能用，不用 npm install，也不用管 driver。它跑在你已经登录的浏览器里，省掉了登录这一步。
 
 <figure class="post-figure is-icon"><img src="/post-images/nforce-autotest/00-icon.png" alt="nForce AutoTest 图标" width="140" height="140"><figcaption>图标是机器人头 —— nForce 系列里闪电已经被 Tools 占了，自动化就用了机器人</figcaption></figure>
 
