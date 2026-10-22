@@ -36,7 +36,7 @@ description: "四款 nForce 系列 Chrome 扩展，以及它们各自的介绍�
 <article class="project-card">
   <a class="project-cover" href="{{< relref "posts/nforce-screencapture.md" >}}"><img src="/post-images/nforce-screencapture/03-editor.png" alt="nForce Screen Capture 的标注编辑器" loading="lazy"></a>
   <div class="project-body">
-    <h2 class="project-head"><a href="{{< relref "posts/nforce-screencapture.md" >}}">nForce Screen Capture</a><span class="project-version">v1.0.0</span></h2>
+    <h2 class="project-head"><a href="{{< relref "posts/nforce-screencapture.md" >}}">nForce Screen Capture</a><span class="project-version">v1.2.0</span></h2>
     <p>截图和录屏合在一个扩展里：可视区、整页长截图、手动滚动拼接、框选区域，加上带旁白的 MP4 录制和标注编辑器。</p>
     <div class="project-actions">
       <a href="{{< relref "posts/nforce-screencapture.md" >}}">读介绍</a>
