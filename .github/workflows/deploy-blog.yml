@@ -1,0 +1,62 @@
+name: Deploy blog
+
+# 推 blog-source 就构建并发布到 master（GitHub Pages）。
+# 等价于把本地 deploy.sh 搬到 CI：clone master → rsync public/ → 提交 → push，
+# 保持和手工部署完全一样的行为（含保留 master 历史、CNAME 与 .nojekyll 来自 static/）。
+on:
+  push:
+    branches: [blog-source]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-blog
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建并部署
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 检出源码（主题 PaperMod 是 submodule，必须递归拉取）
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: 安装 Hugo 0.165.0（extended，与本地构建版本一致）
+        run: |
+          set -euo pipefail
+          curl -sSL -o /tmp/hugo.tgz \
+            "https://github.com/gohugoio/hugo/releases/download/v0.165.0/hugo_extended_0.165.0_linux-amd64.tar.gz"
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf /tmp/hugo.tgz -C "$HOME/.local/bin" hugo
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/hugo" version
+
+      - name: 构建
+        run: hugo --minify --cleanDestinationDir
+
+      - name: 部署到 master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TMP=$(mktemp -d)
+          git clone --depth 1 --branch master \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$TMP"
+          rsync -a --delete --exclude '.git' public/ "$TMP/"
+          cd "$TMP"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo "内容没有变化，跳过部署"
+            exit 0
+          fi
+          git commit -m "Deploy site: ${GITHUB_SHA::7} $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push origin master
+          echo "已部署到 https://blog.nickwu.fun/"
