@@ -67,15 +67,46 @@
   border-color: var(--secondary);
 }
 
+/* 简介和第一篇之间别留一大片空 */
+.home-info {
+  margin-bottom: 32px;
+}
+
+.home-info .social-icons {
+  margin-top: 6px;
+}
+
+/* 首页只有一个 GitHub 图标，光秃秃一符号像没加载完，给个明确的点击面 */
+.home-info .social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--tertiary);
+  border-radius: 50%;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.home-info .social-icons a:hover {
+  border-color: var(--secondary);
+  background: var(--code-bg);
+}
+
+.home-info .social-icons svg {
+  width: 17px;
+  height: 17px;
+}
+
 /* 列表缩略图统一高度。截图大多是竖长的整屏图，不裁的话一条就占满一屏 */
 .post-entry .entry-cover {
-  max-height: 260px;
+  max-height: 220px;
   overflow: hidden;
 }
 
 .post-entry .entry-cover img {
   width: 100%;
-  height: 260px;
+  height: 220px;
   object-fit: cover;
   object-position: top center;
 }
@@ -83,8 +114,8 @@
 @media (max-width: 640px) {
   .post-entry .entry-cover,
   .post-entry .entry-cover img {
-    max-height: 200px;
-    height: 200px;
+    max-height: 180px;
+    height: 180px;
   }
 }
 
@@ -196,3 +227,277 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   阅读体验：正文节奏、表格、目录、进度条
+   ========================================================================== */
+
+/* 中文长文按 1.8 行高排，段间距跟着行高放宽一点 */
+.md-content {
+  line-height: 1.8;
+}
+
+.md-content p,
+.md-content li {
+  line-height: 1.8;
+}
+
+.md-content p {
+  margin-bottom: 1.35em;
+}
+
+.md-content li > p {
+  margin-bottom: 0.6em;
+}
+
+.md-content ul,
+.md-content ol {
+  margin: 1em 0;
+}
+
+.md-content li {
+  margin: 0.35em 0;
+}
+
+/* 标题上方留白明显大于下方，扫读时才分得清层级。
+   只作用于正文的直属标题，「项目」页卡片里的 h2 不受影响 */
+.md-content > h2 {
+  margin: 2.2em 0 0.7em;
+}
+
+.md-content > h3 {
+  margin: 1.7em 0 0.55em;
+}
+
+.md-content > h4 {
+  margin: 1.5em 0 0.45em;
+}
+
+.md-content > h2:first-child,
+.md-content > h3:first-child {
+  margin-top: 0;
+}
+
+/* 行内代码跟着正文字号走，别缩成脚注 */
+.md-content :not(pre) > code {
+  padding: 0.12em 0.4em;
+  border-radius: 5px;
+  font-size: 0.88em;
+}
+
+/* 表格：表头给底色，行高放宽，长内容顶部对齐 */
+.md-content table {
+  font-size: 0.94em;
+}
+
+.md-content thead th {
+  padding: 10px 14px;
+  background: var(--code-bg);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.md-content tbody td {
+  padding: 10px 14px;
+  vertical-align: top;
+}
+
+.md-content tbody tr + tr td {
+  border-top: 1px solid var(--border);
+}
+
+/* 正文里的链接要能一眼认出来，但别抢标题的注意力 */
+.md-content a:not(.anchor) {
+  text-decoration: underline;
+  text-decoration-color: var(--tertiary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.md-content a:not(.anchor):hover {
+  text-decoration-color: var(--secondary);
+}
+
+.md-content blockquote {
+  margin: 1.6em 0;
+  padding: 0.15em 0 0.15em 1.1em;
+  border-inline-start: 1px solid var(--tertiary);
+  color: var(--secondary);
+}
+
+.post-title,
+.md-content > h2,
+.md-content > h3 {
+  text-wrap: balance;
+}
+
+/* --- 顶部阅读进度条 ------------------------------------------------------- */
+.read-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 999;
+  height: 3px;
+  pointer-events: none;
+}
+
+.read-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0.7;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+/* --- 窄屏（含平板）的目录：去掉整块底色，只留一条细边框 ------------------- */
+@media (max-width: 1279px) {
+  .post-single details.toc {
+    background: transparent;
+    border: 1px solid var(--border);
+  }
+}
+
+/* --- 点图放大 ------------------------------------------------------------- */
+.md-content img {
+  cursor: zoom-in;
+}
+
+.md-content .is-icon img {
+  cursor: default;
+}
+
+.img-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+  background: rgba(0, 0, 0, 0.84);
+  cursor: zoom-out;
+}
+
+.img-zoom.is-open {
+  display: flex;
+}
+
+.img-zoom img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+/* --- 宽屏：目录从折叠条挪到正文右侧，粘住并标出当前章节 ------------------- */
+@media (min-width: 1280px) {
+  html.is-article .post-single {
+    position: relative;
+  }
+
+  html.is-article .post-single details.toc {
+    position: fixed;
+    top: calc(var(--header-height) + 36px);
+    left: calc(50% + 388px);
+    width: 224px;
+    max-height: calc(100vh - var(--header-height) - 96px);
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    scrollbar-width: thin;
+  }
+
+  html.is-article .post-single details.toc summary {
+    display: none;
+  }
+
+  html.is-article .post-single details.toc .inner {
+    padding: 0;
+  }
+
+  html.is-article .post-single details.toc ul {
+    padding-inline-start: 0;
+    margin: 0;
+  }
+
+  html.is-article .post-single details.toc ul ul {
+    padding-inline-start: 0.85em;
+  }
+
+  html.is-article .post-single details.toc li {
+    margin: 0.3em 0;
+    list-style: none;
+  }
+
+  html.is-article .post-single details.toc a {
+    display: block;
+    padding-left: 10px;
+    border-left: 2px solid transparent;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  html.is-article .post-single details.toc a:hover {
+    color: var(--primary);
+  }
+
+  html.is-article .post-single details.toc a.is-current {
+    border-left-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+}
+
+/* --- 移动端：标题别占半屏，表格别挤成一团 -------------------------------- */
+@media (max-width: 640px) {
+  .post-title {
+    font-size: 26px;
+    line-height: 1.32;
+  }
+
+  .md-content {
+    line-height: 1.75;
+  }
+
+  .md-content p {
+    margin-bottom: 1.2em;
+  }
+
+  .md-content table {
+    font-size: 0.9em;
+  }
+
+  .md-content thead th,
+  .md-content tbody td {
+    padding: 8px 10px;
+  }
+}
+
+/* --- 浏览器自带的那些表面 ------------------------------------------------ */
+::selection {
+  background: var(--tertiary);
+  color: var(--primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+html {
+  scrollbar-color: var(--tertiary) transparent;
+}
+

@@ -1,0 +1,6 @@
+{{- /* 文章页专属的排版增强靠这个类生效，避免波及「项目」这类也用 post 布局的页面 */ -}}
+{{- if and .IsPage (eq .Section "posts") }}
+<script>
+  document.documentElement.classList.add("is-article");
+</script>
+{{- end }}

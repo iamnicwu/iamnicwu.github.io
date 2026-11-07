@@ -1,0 +1,106 @@
+{{- /*
+  阅读增强：进度条、宽屏侧栏目录、点图放大。
+  注意 footer 被主题用 partialCached 缓存（cache key 不含页面），
+  所以这里不能按页面条件输出，只能无条件下发、由脚本自己判断是不是文章页。
+  「is-article」由 extend_head.html 在文章页的 <html> 上打标。
+*/ -}}
+<script>
+  (() => {
+    if (!document.documentElement.classList.contains("is-article")) return;
+
+    const bar = document.createElement("div");
+    bar.className = "read-progress";
+    bar.setAttribute("aria-hidden", "true");
+    bar.innerHTML = "<span></span>";
+    document.body.appendChild(bar);
+
+    const toc = document.querySelector(".post-single details.toc");
+    const fill = bar.firstElementChild;
+    const heads = [
+      ...document.querySelectorAll(".post-single .md-content h2[id], .post-single .md-content h3[id]")
+    ];
+    const wide = window.matchMedia("(min-width: 1280px)");
+    const links = new Map();
+
+    if (toc) {
+      toc.querySelectorAll('a[href^="#"]').forEach((a) => {
+        links.set(decodeURIComponent(a.getAttribute("href").slice(1)), a);
+      });
+      const syncToc = () => { toc.open = wide.matches; };
+      syncToc();
+      wide.addEventListener("change", syncToc);
+    }
+
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      fill.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+      if (!heads.length) return;
+
+      const line = window.scrollY + 120;
+      let current = heads[0];
+      for (const h of heads) {
+        if (h.getBoundingClientRect().top + window.scrollY <= line) current = h;
+        else break;
+      }
+      links.forEach((a) => a.classList.remove("is-current"));
+      const active = links.get(current.id);
+      if (active) {
+        active.classList.add("is-current");
+        if (wide.matches && toc) {
+          const box = toc.getBoundingClientRect();
+          const item = active.getBoundingClientRect();
+          if (item.top < box.top + 8) toc.scrollTop -= box.top + 8 - item.top;
+          else if (item.bottom > box.bottom - 8) toc.scrollTop += item.bottom - box.bottom + 8;
+        }
+      }
+    };
+
+    addEventListener(
+      "scroll",
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
+    update();
+
+    // 正文配图点开看大图：文章里的界面截图在 720px 栏里看不清细节
+    const imgs = [...document.querySelectorAll(".post-single .md-content img")].filter(
+      (img) => !img.closest(".is-icon")
+    );
+    if (!imgs.length) return;
+
+    const overlay = document.createElement("div");
+    overlay.className = "img-zoom";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-label", "放大查看图片");
+    overlay.innerHTML = "<img alt=''>";
+    document.body.appendChild(overlay);
+
+    const big = overlay.firstElementChild;
+
+    const close = () => {
+      overlay.classList.remove("is-open");
+      document.body.style.overflow = "";
+      big.removeAttribute("src");
+    };
+
+    imgs.forEach((img) => {
+      img.addEventListener("click", () => {
+        big.src = img.currentSrc || img.src;
+        big.alt = img.alt || "";
+        overlay.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    overlay.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
+    });
+  })();
+</script>
