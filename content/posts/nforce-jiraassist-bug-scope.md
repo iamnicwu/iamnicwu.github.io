@@ -1,8 +1,8 @@
 ---
 title: "天花板数的是 bug，搬过去的也必须是 bug"
 slug: "nforce-jiraassist-bug-scope"
-date: 2026-11-10T17:45:00+08:00
-lastmod: 2026-11-10T17:45:00+08:00
+date: 2026-11-10T17:20:00+08:00
+lastmod: 2026-11-10T17:20:00+08:00
 draft: false
 tags: ["Chrome 扩展", "Jira", "工程实践", "nForce"]
 summary: "「Open now 加上 Type = bug」，一个词的改动。但如果只窄化计数、不窄化搬运，天花板就成了单向玻璃——被搬来的人看得见票，票却看不见天花板。"
