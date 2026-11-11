@@ -1,8 +1,8 @@
 ---
 title: "名字不是身份：Apply 为什么会说「不允许分给这个人」"
 slug: "nforce-jiraassist-assign-by-key"
-date: 2026-11-11T15:45:00+08:00
-lastmod: 2026-11-11T15:45:00+08:00
+date: 2026-11-11T15:20:00+08:00
+lastmod: 2026-11-11T15:20:00+08:00
 draft: false
 tags: ["Chrome 扩展", "Jira", "工程实践", "nForce"]
 summary: "表里显示的是人名，Jira 认的是工号。这两件事在代码里混成一个字段，于是点 Apply 的时候，请求带着「Alex Chen」出门，回来一句「用户不存在」。"
