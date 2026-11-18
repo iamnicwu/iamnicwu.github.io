@@ -1,7 +1,7 @@
 ---
 title: "nForce Todo v2.14.0：笔记里能画 Excalidraw 白板了，画完自动保存"
 slug: "nforce-todo-v2-14-0"
-date: 2026-11-18T17:06:34+08:00
+date: 2026-11-17T01:10:00+08:00
 lastmod: 2026-11-18
 draft: false
 tags: ["Chrome 扩展", "待办管理", "效率工具", "nForce"]

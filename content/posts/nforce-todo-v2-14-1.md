@@ -1,7 +1,7 @@
 ---
 title: "nForce Todo v2.14.1：砍掉 12 MB 的中文手写体；贴进来的 `.excalidraw` 不再是点不开的死卡"
 slug: "nforce-todo-v2-14-1"
-date: 2026-11-18T18:10:16+08:00
+date: 2026-11-18T01:16:00+08:00
 lastmod: 2026-11-18
 draft: false
 tags: ["Chrome 扩展", "待办管理", "效率工具", "nForce"]
